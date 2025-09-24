@@ -7,7 +7,7 @@ def index():
 
 @app.route('/reporte')
 def hacer_reporte():
-    pass
+    return render_template('reporte.html')
 
 @app.route('/admin')
 def admin():
