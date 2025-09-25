@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reportes</title>
+    <link rel="stylesheet" href="/static/styles/reporte.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Success Message (initially hidden) -->
+        <div id="successMessage" class="success-card hidden">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i data-lucide="check-circle"></i>
+                </div>
+                <h2 class="success-title">Reporte Enviado Exitosamente</h2>
+                <p class="success-description">
+                    Su reporte ha sido recibido y será procesado de manera confidencial. Recibirá una confirmación en las próximas 24 horas.
+                </p>
+                <div class="reference-box">
+                    <p><strong>Número de referencia:</strong> <span id="referenceNumber"></span></p>
+                    <p class="reference-note">Guarde este número para futuras consultas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <div id="mainForm" class="form-container">
+            <form id="reportingForm" class="form-space">
+                <!-- Personal Information Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i data-lucide="user"></i>
+                            Información Personal
+                        </h3>
+                        <p class="card-description">Proporcione sus datos personales para el registro del reporte</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="rut" class="label">
+                                    <i data-lucide="user"></i>
+                                    RUT *
+                                </label>
+                                <input type="text" id="rut" name="rut" placeholder="12.345.678-9" class="input" required>
+                                <div class="error-message" id="rutError"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="curso" class="label">
+                                    <i data-lucide="graduation-cap"></i>
+                                    Curso *
+                                </label>
+                                <input type="text" id="curso" name="curso" placeholder="Ej: 3° Medio A" class="input" required>
+                                <div class="error-message" id="cursoError"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="nombre" class="label">Nombre Completo *</label>
+                                <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" class="input" required>
+                                <div class="error-message" id="nombreError"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="correo" class="label">
+                                    <i data-lucide="mail"></i>
+                                    Correo Electrónico
+                                    <span class="optional-badge">(Opcional)</span>
+                                </label>
+                                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" class="input">
+                                <div class="error-message" id="correoError"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Type Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i data-lucide="alert-triangle"></i>
+                            Tipo de Reporte
+                        </h3>
+                        <p class="card-description">Seleccione la categoría que mejor describe la situación a reportar</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label for="tipoReporte" class="label">Categoría del Incidente *</label>
+                            <select id="tipoReporte" name="tipoReporte" class="select" required>
+                                <option value="">Seleccione el tipo de reporte</option>
+                                <option value="acoso">Acoso</option>
+                                <option value="bullying">Bullying</option>
+                                <option value="discriminacion">Discriminación</option>
+                                <option value="violencia">Violencia</option>
+                                <option value="ciberacoso">Ciberacoso</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                            <div class="error-message" id="tipoReporteError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Declaration Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i data-lucide="file-text"></i>
+                            Declaración del Incidente
+                        </h3>
+                        <p class="card-description">
+                            Describa detalladamente la situación. Incluya fechas, lugares y contexto relevante
+                        </p>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label for="declaracion" class="label">Descripción Detallada *</label>
+                            <textarea 
+                                id="declaracion" 
+                                name="declaracion" 
+                                placeholder="Describa detalladamente la situación que desea reportar. Incluya fechas, lugares y personas involucradas si es posible. Proporcione todo el contexto que considere relevante para la investigación."
+                                class="textarea"
+                                required
+                            ></textarea>
+                            <div class="textarea-footer">
+                                <div class="character-count">
+                                    <span id="charCount">0</span> caracteres (mínimo 20)
+                                </div>
+                                <div class="error-message" id="declaracionError"></div>
+                            </div>
+                            <div class="security-notice">
+                                <i data-lucide="shield"></i>
+                                Su declaración será tratada con la máxima confidencialidad y procesada según nuestros protocolos de seguridad
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Card -->
+                <div class="card submit-card">
+                    <div class="card-content submit-content">
+                        <div class="button-group">
+                            <button type="submit" id="submitBtn" class="btn btn-primary">
+                                <i data-lucide="send"></i>
+                                <span id="submitText">Enviar Reporte Confidencial</span>
+                            </button>
+
+                            <button type="button" id="anonymousBtn" class="btn btn-outline">
+                                <i data-lucide="shield"></i>
+                                Enviar Reporte Anónimo
+                            </button>
+                        </div>
+                        <p class="privacy-notice">
+                            Al enviar este formulario, acepta que la información será procesada de acuerdo a nuestras políticas de privacidad
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="/static/js/reporte.js"></script>
+</body>
+</html>
