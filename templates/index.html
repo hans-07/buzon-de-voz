@@ -16,7 +16,15 @@
                     <img src="/static/img/logo-complejo.png" alt="Logo Buzón escolar">
                     <h1 style="margin: 0 0 0 0.75rem; font-size: 1.6rem; font-weight: 700; letter-spacing: 0.01em; color: #222;">Buzón escolar</h1>
                 </div>
-                
+                <button class="navbar-toggle" aria-label="Abrir menú" aria-expanded="false">
+                    <span class="navbar-toggle-bar"></span>
+                    <span class="navbar-toggle-bar"></span>
+                    <span class="navbar-toggle-bar"></span>
+                </button>
+                <nav class="navbar-menu">
+                    <a href="/login" class="btn-login">Iniciar sesión</a>
+                    <a href="/register" class="btn-register">Registrarse</a>
+                </nav>
             </div>
         </div>
     </header>
@@ -184,4 +192,14 @@
         </div>
     </footer>
 </body>
+<script>
+// Navbar hamburguesa responsivo
+const toggle = document.querySelector('.navbar-toggle');
+const menu = document.querySelector('.navbar-menu');
+toggle.addEventListener('click', function() {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', !expanded);
+    menu.classList.toggle('open');
+});
+</script>
 </html>
