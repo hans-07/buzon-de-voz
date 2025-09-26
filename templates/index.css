@@ -1,11 +1,134 @@
+/* --- NAVBAR RESPONSIVO Y MENÚ HAMBURGUESA --- */
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 1rem;
+    z-index: 100;
+}
+.navbar-toggle-bar {
+    width: 1.8rem;
+    height: 0.22rem;
+    background: #222;
+    border-radius: 2px;
+    margin: 0.18rem 0;
+    transition: all 0.3s;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+@media (max-width: 900px) {
+    .navbar-menu {
+        gap: 0.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-toggle {
+        display: flex;
+    }
+    .navbar-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #fff;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        border-radius: 0.5rem;
+        flex-direction: column;
+        align-items: flex-end;
+        min-width: 180px;
+        padding: 0.75rem 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px);
+        transition: all 0.25s;
+        z-index: 99;
+    }
+    .navbar-menu.open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+    .btn-login, .btn-register {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+    }
+    .btn-register {
+        margin-bottom: 0;
+    }
+}
+.btn-register {
+    margin-left: 0.75rem;
+    padding: 0.5rem 1.2rem;
+    background: #fff;
+    color: #2563eb;
+    border: 2px solid #2563eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.05);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn-register:hover {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.12);
+}
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+/* Botón de iniciar sesión arriba a la derecha */
+.btn-login {
+    margin-left: auto;
+    padding: 0.5rem 1.2rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn-login:hover {
+    background: #1e40af;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+}
 }
 
 :root {
     /* Colores calmantes para confianza y seguridad */
+    justify-content: space-between;
     --primary: #4f46e5;
     --secondary: #7c3aed;
     --accent: #8b5cf6;
