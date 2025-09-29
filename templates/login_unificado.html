@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/styles/login.css">
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-tabs">
+        <button class="tab-button active" data-tab="user">Usuario</button>
+        <button class="tab-button" data-tab="admin">Administrador</button>
+    </div>
+
+    <!-- Formulario de Usuario -->
+    <div id="user-tab" class="tab-content active">
+        <div class="form-container">
+            <h2>Iniciar Sesión como Usuario</h2>
+            <form method="POST" action="{{ url_for('login_usuario') }}" class="auth-form">
+                <div class="form-group">
+                    <label for="user_email">Email</label>
+                    <input type="email" id="user_email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="user_password">Contraseña</label>
+                    <input type="password" id="user_password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">Iniciar Sesión</button>
+                <p class="auth-link">
+                    ¿No tienes cuenta? <a href="{{ url_for('registro') }}">Regístrate aquí</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Formulario de Administrador -->
+    <div id="admin-tab" class="tab-content">
+        <div class="form-container">
+            <h2>Iniciar Sesión como Administrador</h2>
+            <form method="POST" action="{{ url_for('login_admin') }}" class="auth-form">
+                <div class="form-group">
+                    <label for="admin_username">Usuario</label>
+                    <input type="text" id="admin_username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin_password">Contraseña</label>
+                    <input type="password" id="admin_password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-admin btn-full">Acceder como Admin</button>
+                <p class="auth-note">
+                    <small>Credenciales por defecto: usuario: <strong>admin</strong>, contraseña: <strong>admin123</strong></small>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Registro -->
+<div class="modal" id="registroModal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Registrarse como Usuario</h2>
+        <form method="POST" action="{{ url_for('registro') }}" class="auth-form">
+            <div class="form-group">
+                <label for="reg_nombre">Nombre Completo *</label>
+                <input type="text" id="reg_nombre" name="nombre" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg_email">Email *</label>
+                <input type="email" id="reg_email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg_password">Contraseña *</label>
+                <input type="password" id="reg_password" name="password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg_confirm_password">Confirmar Contraseña *</label>
+                <input type="password" id="reg_confirm_password" name="confirm_password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-full">Registrarse</button>
+        </form>
+    </div>
+</div>
+<script>
+// Sistema de pestañas
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            
+            // Remover clase active de todos
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Agregar clase active al seleccionado
+            button.classList.add('active');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+    });
+    
+    // Modal de registro
+    const modal = document.getElementById('registroModal');
+    const closeBtn = document.querySelector('.close');
+    
+    // Mostrar modal cuando se hace clic en "Regístrate aquí"
+    document.querySelector('a[href="{{ url_for("registro") }}"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.style.display = 'block';
+    });
+    
+    // Cerrar modal
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+    
+    // Cerrar modal al hacer clic fuera
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+</script>
+</body>
+</html>

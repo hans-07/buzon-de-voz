@@ -214,6 +214,7 @@ body {
     gap: 0.5rem;
     transition: all 0.2s;
     font-size: 1rem;
+    text-decoration: none;
 }
 
 .btn-primary:hover {
