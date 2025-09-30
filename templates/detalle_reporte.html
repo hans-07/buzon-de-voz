@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+    <title>Detalle del Reporte</title>
+    <style>
+        .severidad-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        .severidad-leve { background-color: #d4edda; color: #155724; }
+        .severidad-intermedio { background-color: #fff3cd; color: #856404; }
+        .severidad-grave { background-color: #f8d7da; color: #721c24; }
+        .card { margin-bottom: 1rem; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Detalle del Reporte #{{ reporte.id }}</h1>
+            <a href="{{ url_for('admin') }}" class="btn btn-secondary">
+                <i data-lucide="arrow-left"></i> Volver al Panel
+            </a>
+        </div>
+
+        <!-- Información Básica -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Información Básica</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Nombre:</strong> {{ reporte.nombre }}<br>
+                        <strong>RUT:</strong> {{ reporte.rut }}<br>
+                        <strong>Curso:</strong> {{ reporte.curso }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Fecha de Creación:</strong> {{ reporte.created_at.strftime('%d/%m/%Y %H:%M') if reporte.created_at else 'N/A' }}<br>
+                        <strong>Tipo de Reporte:</strong> {{ reporte.tipo_reporte|title }}<br>
+                        <strong>Severidad:</strong> 
+                        <span class="severidad-badge severidad-{{ reporte.severidad }}">
+                            {{ reporte.severidad|title }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Información de Contacto</h5>
+            </div>
+            <div class="card-body">
+                <strong>Correo Electrónico:</strong> 
+                {{ reporte.correo if reporte.correo else 'No proporcionado' }}
+            </div>
+        </div>
+
+        <!-- Declaración Completa -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Declaración Completa</h5>
+            </div>
+            <div class="card-body">
+                <div style="white-space: pre-wrap; line-height: 1.6;">
+                    {{ reporte.declaracion }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Acciones</h5>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-primary">
+                    <i data-lucide="message-square"></i> Agregar Comentario
+                </button>
+                <button class="btn btn-warning">
+                    <i data-lucide="edit"></i> Cambiar Estado
+                </button>
+                <button class="btn btn-danger">
+                    <i data-lucide="archive"></i> Archivar Reporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

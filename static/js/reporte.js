@@ -1,229 +1,177 @@
-// Form state management
-let formData = {
-  rut: "",
-  curso: "",
-  nombre: "",
-  correo: "",
-  tipoReporte: "",
-  declaracion: "",
-}
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar Lucide icons
+    lucide.createIcons();
+    
+    // Elementos del DOM
+    const form = document.getElementById('reportingForm');
+    const successMessage = document.getElementById('successMessage');
+    const mainForm = document.getElementById('mainForm');
+    const declaracionTextarea = document.getElementById('declaracion');
+    const charCount = document.getElementById('charCount');
+    const submitBtn = document.getElementById('submitBtn');
+    const anonymousBtn = document.getElementById('anonymousBtn');
+    const tipoReporteSelect = document.getElementById('tipoReporte');
+    const severidadHidden = document.getElementById('severidad');
 
-let errors = {}
-let isSubmitting = false
+    // Mapeo de severidades automáticas
+    const severidadMap = {
+        // Graves - Requieren acción inmediata
+        'acoso': 'grave',
+        'bullying': 'grave', 
+        'violencia': 'grave',
+        'ciberacoso': 'grave',
+        
+        // Intermedios - Requieren intervención
+        'discriminacion': 'intermedio',
+        
+        // Leves - Situaciones que requieren atención
+        'conflicto': 'leve',
+        'indisciplina': 'leve',
+        'otro': 'leve'
+    };
 
-// DOM elements
-const form = document.getElementById("reportingForm")
-const mainForm = document.getElementById("mainForm")
-const successMessage = document.getElementById("successMessage")
-const submitBtn = document.getElementById("submitBtn")
-const submitText = document.getElementById("submitText")
-const anonymousBtn = document.getElementById("anonymousBtn")
-const charCount = document.getElementById("charCount")
-
-// RUT validation function
-function validateRUT(rut) {
-  const cleanRUT = rut.replace(/[.-]/g, "")
-  if (cleanRUT.length < 8 || cleanRUT.length > 9) return false
-
-  const body = cleanRUT.slice(0, -1)
-  const dv = cleanRUT.slice(-1).toLowerCase()
-
-  let sum = 0
-  let multiplier = 2
-
-  for (let i = body.length - 1; i >= 0; i--) {
-    sum += Number.parseInt(body[i]) * multiplier
-    multiplier = multiplier === 7 ? 2 : multiplier + 1
-  }
-
-  const remainder = sum % 11
-  const calculatedDV = remainder < 2 ? remainder.toString() : remainder === 10 ? "k" : (11 - remainder).toString()
-
-  return dv === calculatedDV
-}
-
-// Form validation
-function validateForm() {
-  const newErrors = {}
-
-  // RUT validation
-  if (!formData.rut.trim()) {
-    newErrors.rut = "El RUT es obligatorio"
-  } else if (!validateRUT(formData.rut)) {
-    newErrors.rut = "El RUT ingresado no es válido"
-  }
-
-  // Name validation
-  if (!formData.nombre.trim()) {
-    newErrors.nombre = "El nombre es obligatorio"
-  } else if (formData.nombre.trim().length < 2) {
-    newErrors.nombre = "El nombre debe tener al menos 2 caracteres"
-  }
-
-  // Course validation
-  if (!formData.curso.trim()) {
-    newErrors.curso = "El curso es obligatorio"
-  }
-
-  // Report type validation
-  if (!formData.tipoReporte) {
-    newErrors.tipoReporte = "Debe seleccionar un tipo de reporte"
-  }
-
-  // Declaration validation
-  if (!formData.declaracion.trim()) {
-    newErrors.declaracion = "La declaración es obligatoria"
-  } else if (formData.declaracion.trim().length < 20) {
-    newErrors.declaracion = "La declaración debe tener al menos 20 caracteres para proporcionar contexto suficiente"
-  }
-
-  // Email validation (optional)
-  if (formData.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
-    newErrors.correo = "El formato del correo electrónico no es válido"
-  }
-
-  errors = newErrors
-  displayErrors()
-  return Object.keys(newErrors).length === 0
-}
-
-// Display errors
-function displayErrors() {
-  Object.keys(formData).forEach((field) => {
-    const errorElement = document.getElementById(`${field}Error`)
-    const inputElement = document.getElementById(field)
-
-    if (errors[field]) {
-      errorElement.textContent = errors[field]
-      inputElement.classList.add("error")
-    } else {
-      errorElement.textContent = ""
-      inputElement.classList.remove("error")
+    // Actualizar severidad automáticamente cuando cambie el tipo de reporte
+    if (tipoReporteSelect) {
+        tipoReporteSelect.addEventListener('change', function() {
+            const tipoSeleccionado = this.value;
+            if (tipoSeleccionado && severidadMap[tipoSeleccionado]) {
+                severidadHidden.value = severidadMap[tipoSeleccionado];
+            } else {
+                severidadHidden.value = 'leve'; // Valor por defecto
+            }
+        });
     }
-  })
-}
 
-// Handle input changes
-function handleInputChange(field, value) {
-  formData[field] = value
-
-  // Clear error when user starts typing
-  if (errors[field]) {
-    errors[field] = ""
-    displayErrors()
-  }
-
-  // Update character count for declaration
-  if (field === "declaracion") {
-    charCount.textContent = value.length
-  }
-}
-
-// Show success message
-function showSuccessMessage() {
-  const referenceNumber = `REP-${Date.now().toString().slice(-6)}`
-  document.getElementById("referenceNumber").textContent = referenceNumber
-
-  mainForm.classList.add("hidden")
-  successMessage.classList.remove("hidden")
-
-  // Reset form after 5 seconds
-  setTimeout(() => {
-    resetForm()
-  }, 5000)
-}
-
-// Reset form
-function resetForm() {
-  formData = {
-    rut: "",
-    curso: "",
-    nombre: "",
-    correo: "",
-    tipoReporte: "",
-    declaracion: "",
-  }
-
-  form.reset()
-  charCount.textContent = "0"
-  errors = {}
-  displayErrors()
-
-  successMessage.classList.add("hidden")
-  mainForm.classList.remove("hidden")
-}
-
-// Handle form submission
-async function handleSubmit(e) {
-  e.preventDefault()
-
-  if (!validateForm()) return
-
-  isSubmitting = true
-  submitBtn.disabled = true
-  anonymousBtn.disabled = true
-
-  // Add loading state
-  const sendIcon = submitBtn.querySelector("i")
-  sendIcon.setAttribute("data-lucide", "clock")
-  const lucide = window.lucide // Declare the lucide variable
-  lucide.createIcons()
-  sendIcon.classList.add("loading")
-  submitText.textContent = "Enviando Reporte..."
-
-  try {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    console.log("Form submitted:", formData)
-    showSuccessMessage()
-  } catch (error) {
-    console.error("Submission error:", error)
-    alert("Error al enviar el reporte. Por favor, inténtelo nuevamente.")
-  } finally {
-    isSubmitting = false
-    submitBtn.disabled = false
-    anonymousBtn.disabled = false
-
-    // Reset button state
-    sendIcon.setAttribute("data-lucide", "send")
-    lucide.createIcons()
-    sendIcon.classList.remove("loading")
-    submitText.textContent = "Enviar Reporte Confidencial"
-  }
-}
-
-// Handle anonymous submission
-function handleAnonymousSubmit() {
-  console.log("Anonymous report submission")
-  alert("Funcionalidad de reporte anónimo en desarrollo")
-}
-
-// Event listeners
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize Lucide icons
-  const lucide = window.lucide // Declare the lucide variable
-  lucide.createIcons()
-
-  // Form submission
-  form.addEventListener("submit", handleSubmit)
-
-  // Anonymous button
-  anonymousBtn.addEventListener("click", handleAnonymousSubmit)
-
-  // Input event listeners
-  Object.keys(formData).forEach((field) => {
-    const element = document.getElementById(field)
-    if (element) {
-      element.addEventListener("input", (e) => {
-        handleInputChange(field, e.target.value)
-      })
+    // Contador de caracteres
+    if (declaracionTextarea && charCount) {
+        declaracionTextarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+            
+            // Validación mínima de caracteres
+            if (this.value.length < 20) {
+                this.style.borderColor = '#e74c3c';
+            } else {
+                this.style.borderColor = '#27ae60';
+            }
+        });
     }
-  })
 
-  // Character count for declaration
-  const declaracionInput = document.getElementById("declaracion")
-  declaracionInput.addEventListener("input", (e) => {
-    charCount.textContent = e.target.value.length
-  })
-})
+    // Validación de RUT chileno (opcional)
+    function validarRUT(rut) {
+        if (!rut) return false;
+        
+        // Limpiar RUT
+        rut = rut.replace(/\./g, '').replace(/-/g, '').toUpperCase();
+        
+        if (rut.length < 2) return false;
+        
+        const cuerpo = rut.slice(0, -1);
+        const dv = rut.slice(-1);
+        
+        // Validar que el cuerpo sea numérico
+        if (!/^\d+$/.test(cuerpo)) return false;
+        
+        // Calcular DV esperado
+        let suma = 0;
+        let multiplo = 2;
+        
+        for (let i = cuerpo.length - 1; i >= 0; i--) {
+            suma += parseInt(cuerpo.charAt(i)) * multiplo;
+            multiplo = multiplo === 7 ? 2 : multiplo + 1;
+        }
+        
+        const dvEsperado = 11 - (suma % 11);
+        const dvCalculado = dvEsperado === 11 ? '0' : dvEsperado === 10 ? 'K' : dvEsperado.toString();
+        
+        return dvCalculado === dv;
+    }
+
+    // Validación de formulario
+    function validarFormulario() {
+        let isValid = true;
+        
+        // Limpiar errores previos
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.textContent = '';
+        });
+        
+        document.querySelectorAll('.input, .select, .textarea').forEach(el => {
+            el.style.borderColor = '';
+        });
+
+        // Validar RUT
+        const rutInput = document.getElementById('rut');
+        if (rutInput && rutInput.value.trim()) {
+            if (!validarRUT(rutInput.value)) {
+                document.getElementById('rutError').textContent = 'RUT inválido';
+                rutInput.style.borderColor = '#e74c3c';
+                isValid = false;
+            }
+        }
+
+        // Validar campos requeridos
+        const requiredFields = ['nombre', 'rut', 'curso', 'tipoReporte', 'declaracion'];
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field && !field.value.trim()) {
+                document.getElementById(fieldId + 'Error').textContent = 'Este campo es requerido';
+                field.style.borderColor = '#e74c3c';
+                isValid = false;
+            }
+        });
+
+        // Validar mínimo de caracteres en declaración
+        if (declaracionTextarea && declaracionTextarea.value.length < 20) {
+            document.getElementById('declaracionError').textContent = 'La descripción debe tener al menos 20 caracteres';
+            declaracionTextarea.style.borderColor = '#e74c3c';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // Manejar envío del formulario
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!validarFormulario()) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Mostrar loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i data-lucide="loader"></i> Enviando...';
+            lucide.createIcons();
+        });
+    }
+
+    // Botón de reporte anónimo
+    if (anonymousBtn) {
+        anonymousBtn.addEventListener('click', function() {
+            if (confirm('¿Está seguro de que desea enviar un reporte anónimo? No podremos contactarlo para seguimiento.')) {
+                // Limpiar campos de identificación
+                document.getElementById('nombre').value = 'Anónimo';
+                document.getElementById('rut').value = 'Anónimo';
+                document.getElementById('correo').value = '';
+                
+                // Asegurar que la severidad se actualice
+                if (tipoReporteSelect.value) {
+                    severidadHidden.value = severidadMap[tipoReporteSelect.value] || 'leve';
+                }
+                
+                // Enviar formulario
+                if (validarFormulario()) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+    }
+
+    // Mostrar mensajes flash de Flask
+    const flashMessages = document.querySelector('.alert');
+    if (flashMessages) {
+        setTimeout(() => {
+            flashMessages.style.display = 'none';
+        }, 5000);
+    }
+});
