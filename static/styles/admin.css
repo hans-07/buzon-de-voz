@@ -1,239 +1,43 @@
- :root {
-      --bg: #ffffff;
-      --surface: #fafafa;
-      --text: #1a1a1a;
-      --text-muted: #666666;
-      --border: #eaeaea;
-      --primary: #4f46e5;
-      --success: #0d9488;
-      --warning: #d97706;
-      --danger: #b91c1c;
-      --radius: 8px;
-      --space-xs: 0.25rem;
-      --space-sm: 0.5rem;
-      --space-md: 1rem;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
-    }
+:root {
+  --bg: #f8f9fa;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666666;
+  --border: #eaeaea;
+  --primary: #4f46e5;
+  --success: #0d9488;
+  --warning: #d97706;
+  --danger: #b91c1c;
+  --info: #0ea5e9;
+  --purple: #7c3aed;
+  --radius: 8px;
+}
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #f8f9fa;
-      color: var(--text);
-      line-height: 1.5;
-    }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
 
-    .container {
-      max-width: 1200px;
-    }
+/* Categorías genéricas */
+.badge.bg-primary { background: #f0f0ff; color: var(--primary); }
+.badge.bg-info { background: #eff6ff; color: var(--info); }
 
-    /* ——— Header Minimalista ——— */
-    .main-header {
-      background: var(--bg);
-      padding: var(--space-lg) 0;
-      margin-bottom: var(--space-xl);
-      border-bottom: 1px solid var(--border);
-    }
+/* Prioridad */
+.badge-prioridad-alta { background: #fef2f2; color: var(--danger); }
+.badge-prioridad-media { background: #fffbeb; color: var(--warning); }
+.badge-prioridad-baja { background: #ecfdf5; color: var(--success); }
 
-    .main-header h1 {
-      font-weight: 600;
-      font-size: 1.75rem;
-      margin-bottom: var(--space-sm);
-      color: var(--text);
-    }
+/* Estado */
+.badge-estado-pendiente { background: #fffbeb; color: var(--warning); }
+.badge-estado-en_revision { background: #eff6ff; color: var(--primary); }
+.badge-estado-resuelto { background: #ecfdf5; color: var(--success); }
 
-    .main-header p {
-      color: var(--text-muted);
-      font-size: 1rem;
-      margin-bottom: var(--space-md);
-    }
-
-    .logout-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.4rem 0.8rem;
-      font-size: 0.875rem;
-      border-radius: var(--radius);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      transition: all 0.2s ease;
-    }
-
-    .logout-btn:hover {
-      background: var(--surface);
-      color: var(--text);
-      border-color: #d1d1d1;
-    }
-
-    /* ——— Estadísticas ——— */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: var(--space-lg);
-      margin-bottom: var(--space-xl);
-    }
-
-    .stat-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: var(--space-lg);
-      text-align: center;
-    }
-
-    .stat-card h3 {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: var(--space-xs);
-      color: var(--text);
-    }
-
-    .stat-card p {
-      color: var(--text-muted);
-      margin: 0;
-      font-size: 0.95rem;
-    }
-
-    /* ——— Tabla ——— */
-    .table-container {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .table-header {
-      padding: var(--space-md) var(--space-lg);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .table-header h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 0;
-      color: var(--text);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    thead th {
-      text-align: left;
-      padding: 0.75rem var(--space-md);
-      font-weight: 600;
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    tbody td {
-      padding: 0.75rem var(--space-md);
-      border-top: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    /* Badges minimalistas */
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .badge-category {
-      background: #f0f0ff;
-      color: var(--primary);
-    }
-
-    .badge-prioridad-alta {
-      background: #fef2f2;
-      color: var(--danger);
-    }
-    .badge-prioridad-media {
-      background: #fffbeb;
-      color: var(--warning);
-    }
-    .badge-prioridad-baja {
-      background: #ecfdf5;
-      color: var(--success);
-    }
-
-    .badge-estado-pendiente {
-      background: #fffbeb;
-      color: var(--warning);
-    }
-    .badge-estado-en_revision {
-      background: #eff6ff;
-      color: var(--primary);
-    }
-    .badge-estado-resuelto {
-      background: #ecfdf5;
-      color: var(--success);
-    }
-
-    /* Botones de acción */
-    .action-btn {
-      width: 28px;
-      height: 28px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: transparent;
-      color: var(--text-muted);
-      transition: all 0.15s ease;
-    }
-
-    .action-btn:hover {
-      background: var(--surface);
-      border-color: #d1d1d1;
-      color: var(--text);
-    }
-
-    .action-group {
-      display: flex;
-      gap: 0.375rem;
-      justify-content: center;
-    }
-
-    /* Estado vacío */
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-    }
-
-    .empty-state i {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 1rem;
-      color: #b0b0b0;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .main-header h1 {
-        font-size: 1.5rem;
-      }
-      .stats {
-        grid-template-columns: 1fr;
-      }
-      thead th,
-      tbody td {
-        padding: 0.6rem 0.75rem;
-        font-size: 0.875rem;
-      }
-    }
+/* Tipo de reporte */
+.badge-anonimo { background: #f5f3ff; color: var(--purple); }

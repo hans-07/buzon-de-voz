@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify
 from reportes import Reporte
 
 app = Flask(__name__)
@@ -18,16 +18,34 @@ def index():
 # Página para enviar reportes (acceso libre para estudiantes)
 @app.route('/enviar_reporte', methods=['GET', 'POST'])
 def hacer_reporte():
+    """Página para enviar reportes (acceso libre para estudiantes)"""
     if request.method == 'POST':
-        nombre = request.form.get('nombre')
-        rut = request.form.get('rut')
-        curso = request.form.get('curso')
-        correo = request.form.get('correo')
+        # Determinar si es anónimo
+        es_anonimo = request.form.get('es_anonimo') == 'true'
+        
+        if es_anonimo:
+            # Datos para reporte anónimo
+            nombre = "Anónimo"
+            rut = "No proporcionado"
+            curso = "No especificado"
+            correo = None
+        else:
+            # Datos para reporte normal
+            nombre = request.form.get('nombre')
+            rut = request.form.get('rut')
+            curso = request.form.get('curso')
+            correo = request.form.get('correo')
+        
         categoria = request.form.get('tipoReporte')
         descripcion = request.form.get('declaracion')
         
-        if not all([nombre, rut, curso, categoria, descripcion]):
+        # Validaciones
+        if not es_anonimo and not all([nombre, rut, curso, categoria, descripcion]):
             flash('Por favor complete todos los campos requeridos', 'error')
+            return render_template('reporte.html')
+        
+        if es_anonimo and not all([categoria, descripcion]):
+            flash('Por favor seleccione categoría y describa el incidente', 'error')
             return render_template('reporte.html')
         
         try:
@@ -44,18 +62,63 @@ def hacer_reporte():
             }
             prioridad = prioridad_map.get(categoria, 'media')
             
-            # Crear reporte directamente
-            if Reporte.crear_reporte(nombre, rut, curso, correo, categoria, descripcion, prioridad):
-                flash('Reporte enviado exitosamente. Será revisado pronto.', 'success')
+            # Crear reporte
+            if Reporte.crear_reporte(nombre, rut, curso, correo, categoria, descripcion, prioridad, es_anonimo):
+                if es_anonimo:
+                    flash('Reporte anónimo enviado exitosamente. Será revisado pronto.', 'success')
+                else:
+                    flash('Reporte enviado exitosamente. Será revisado pronto.', 'success')
             else:
                 flash('Error al enviar el reporte', 'error')
                 
         except Exception as e:
             flash(f'Error: {str(e)}', 'error')
         
-        return redirect(url_for('hacer_reporte'))
+        return redirect(url_for('index'))
     
     return render_template('reporte.html')
+
+@app.route('/enviar_anonimo', methods=['POST'])
+def enviar_anonimo():
+    """Endpoint para enviar reporte anónimo (AJAX)"""
+    try:
+        data = request.get_json()
+        categoria = data.get('categoria')
+        descripcion = data.get('descripcion')
+        
+        if not all([categoria, descripcion]):
+            return jsonify({'success': False, 'message': 'Categoría y descripción son requeridas'})
+        
+        # Determinar prioridad
+        prioridad_map = {
+            'acoso': 'alta', 'bullying': 'alta', 'violencia': 'alta',
+            'ciberacoso': 'alta', 'discriminacion': 'media',
+            'conflicto': 'baja', 'indisciplina': 'baja', 'otro': 'baja'
+        }
+        prioridad = prioridad_map.get(categoria, 'media')
+        
+        # Crear reporte anónimo
+        resultado = Reporte.crear_reporte(
+            nombre="Anónimo",
+            rut="No proporcionado", 
+            curso="No especificado",
+            correo=None,
+            categoria=categoria,
+            descripcion=descripcion,
+            prioridad=prioridad,
+            es_anonimo=True
+        )
+        
+        if resultado:
+            return jsonify({
+                'success': True, 
+                'message': 'Reporte anónimo enviado exitosamente'
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Error al enviar el reporte'})
+            
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error: {str(e)}'})
 
 @app.route('/admin')
 def admin():

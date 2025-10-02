@@ -11,14 +11,15 @@ class Reporte:
         self.descripcion = data.get('descripcion')
         self.estado = data.get('estado', 'pendiente')
         self.prioridad = data.get('prioridad', 'media')
+        self.es_anonimo = data.get('es_anonimo', False)
         self.created_at = data.get('created_at')
         self.updated_at = data.get('updated_at')
 
     @classmethod
-    def crear_reporte(cls, nombre, rut, curso, correo, categoria, descripcion, prioridad='media'):
+    def crear_reporte(cls, nombre, rut, curso, correo, categoria, descripcion, prioridad='media', es_anonimo=False):
         query = """
-            INSERT INTO reportes (nombre, rut, curso, correo, categoria, descripcion, prioridad) 
-            VALUES (%(nombre)s, %(rut)s, %(curso)s, %(correo)s, %(categoria)s, %(descripcion)s, %(prioridad)s)
+            INSERT INTO reportes (nombre, rut, curso, correo, categoria, descripcion, prioridad, es_anonimo) 
+            VALUES (%(nombre)s, %(rut)s, %(curso)s, %(correo)s, %(categoria)s, %(descripcion)s, %(prioridad)s, %(es_anonimo)s)
         """
         data = {
             'nombre': nombre,
@@ -27,7 +28,8 @@ class Reporte:
             'correo': correo,
             'categoria': categoria,
             'descripcion': descripcion,
-            'prioridad': prioridad
+            'prioridad': prioridad,
+            'es_anonimo': es_anonimo
         }
         return connectToMySQL('db_buzon').query_db(query, data)
 
