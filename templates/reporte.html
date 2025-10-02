@@ -1,346 +1,163 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Reportes</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Reportes</title>
     <link rel="stylesheet" href="/static/styles/reporte.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
 </head>
 <body>
-    {% with messages = get_flashed_messages(with_categories=true) %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <div class="flash-messages">
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
-            {{ message }}
-        </div>
-        {% endfor %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">
+        {{ message }}
+      </div>
+      {% endfor %}
     </div>
     {% endif %}
-    {% endwith %}
-    
-    <div class="container">
-        <!-- Success Message (initially hidden) -->
-        <div id="successMessage" class="success-card hidden">
-            <div class="success-content">
-                <div class="success-icon">
-                    <i data-lucide="check-circle"></i>
-                </div>
-                <h2 class="success-title">Reporte Enviado Exitosamente</h2>
-                <p class="success-description">
-                    Su reporte ha sido recibido y será procesado de manera confidencial. Recibirá una confirmación en las próximas 24 horas.
-                </p>
-                <div class="reference-box">
-                    <p><strong>Número de referencia:</strong> <span id="referenceNumber"></span></p>
-                    <p class="reference-note">Guarde este número para futuras consultas</p>
-                </div>
-            </div>
+  {% endwith %}
+
+  <div class="container">
+    <!-- Success Message -->
+    <div id="successMessage" class="hidden">
+      <div class="success-card">
+        <div class="success-icon">
+          <i data-lucide="check-circle"></i>
         </div>
-
-        <!-- Main Form -->
-        <div id="mainForm" class="form-container">
-            <form method="POST" id="reportingForm" class="form-space">
-                <!-- Personal Information Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i data-lucide="user"></i>
-                            Información Personal
-                        </h3>
-                        <p class="card-description">Proporcione sus datos personales para el registro del reporte</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label for="rut" class="label">
-                                    <i data-lucide="user"></i>
-                                    RUT *
-                                </label>
-                                <input type="text" id="rut" name="rut" placeholder="12.345.678-9" class="input" required>
-                                <div class="error-message" id="rutError"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="curso" class="label">
-                                    <i data-lucide="graduation-cap"></i>
-                                    Curso *
-                                </label>
-                                <input type="text" id="curso" name="curso" placeholder="Ej: 3° Medio A" class="input" required>
-                                <div class="error-message" id="cursoError"></div>
-                            </div>
-                        </div>
-
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label for="nombre" class="label">Nombre Completo *</label>
-                                <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" class="input" required>
-                                <div class="error-message" id="nombreError"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="correo" class="label">
-                                    <i data-lucide="mail"></i>
-                                    Correo Electrónico
-                                    <span class="optional-badge">(Opcional)</span>
-                                </label>
-                                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" class="input">
-                                <div class="error-message" id="correoError"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Report Type Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i data-lucide="alert-triangle"></i>
-                            Tipo de Reporte
-                        </h3>
-                        <p class="card-description">Seleccione la categoría que mejor describe la situación a reportar</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="form-group">
-                            <label for="tipoReporte" class="label">Categoría del Incidente *</label>
-                            <select id="tipoReporte" name="tipoReporte" class="select" required>
-                                <option value="">Seleccione el tipo de reporte</option>
-                                <option value="acoso" data-severidad="grave">Acoso</option>
-                                <option value="bullying" data-severidad="grave">Bullying</option>
-                                <option value="discriminacion" data-severidad="intermedio">Discriminación</option>
-                                <option value="violencia" data-severidad="grave">Violencia</option>
-                                <option value="ciberacoso" data-severidad="grave">Ciberacoso</option>
-                                <option value="conflicto" data-severidad="leve">Conflicto entre estudiantes</option>
-                                <option value="indisciplina" data-severidad="leve">Indisciplina</option>
-                                <option value="otro" data-severidad="leve">Otro</option>
-                            </select>
-                            <div class="error-message" id="tipoReporteError"></div>
-                        </div>
-                        
-                        
-                        <!-- Indicador de Severidad -->
-                        <div id="severidadIndicator" class="severity-indicator hidden">
-                            <div class="severity-info">
-                                <i data-lucide="info" class="severity-icon"></i>
-                                <div class="severity-text">
-                                    <strong>Nivel de severidad asignado: </strong>
-                                    <span id="severidadText">Leve</span>
-                                </div>
-                            </div>
-                            <div id="severidadDescription" class="severity-description">
-                                Este reporte será clasificado como de prioridad baja y será revisado en el orden de llegada.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Declaration Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i data-lucide="file-text"></i>
-                            Declaración del Incidente
-                        </h3>
-                        <p class="card-description">
-                            Describa detalladamente la situación. Incluya fechas, lugares y contexto relevante
-                        </p>
-                    </div>
-                    <div class="card-content">
-                        <div class="form-group">
-                            <label for="declaracion" class="label">Descripción Detallada *</label>
-                            <textarea 
-                                id="declaracion" 
-                                name="declaracion" 
-                                placeholder="Describa detalladamente la situación que desea reportar. Incluya fechas, lugares y personas involucradas si es posible. Proporcione todo el contexto que considere relevante para la investigación."
-                                class="textarea"
-                                required
-                            ></textarea>
-                            <div class="textarea-footer">
-                                <div class="character-count">
-                                    <span id="charCount">0</span> caracteres (mínimo 20)
-                                </div>
-                                <div class="error-message" id="declaracionError"></div>
-                            </div>
-                            <div class="security-notice">
-                                <i data-lucide="shield"></i>
-                                Su declaración será tratada con la máxima confidencialidad y procesada según nuestros protocolos de seguridad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Card -->
-                <div class="card submit-card">
-                    <div class="card-content submit-content">
-                        <div class="button-group">
-                            <button type="submit" id="submitBtn" class="btn btn-primary">
-                                <i data-lucide="send"></i>
-                                <span id="submitText">Enviar Reporte Confidencial</span>
-                            </button>
-
-                            <button type="button" id="anonymousBtn" class="btn btn-outline">
-                                <i data-lucide="shield"></i>
-                                Enviar Reporte Anónimo
-                            </button>
-                        </div>
-                        <p class="privacy-notice">
-                            Al enviar este formulario, acepta que la información será procesada de acuerdo a nuestras políticas de privacidad
-                        </p>
-                    </div>
-                </div>
-            </form>
+        <h2 class="success-title">Reporte Enviado Exitosamente</h2>
+        <p class="success-description">
+          Su reporte ha sido recibido y será procesado de manera confidencial. Recibirá una confirmación en las próximas 24 horas.
+        </p>
+        <div class="reference-box">
+          <p><strong>Número de referencia:</strong> <span id="referenceNumber"></span></p>
+          <p class="reference-note">Guarde este número para futuras consultas</p>
         </div>
+      </div>
     </div>
 
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="/static/js/reporte.js"></script>
-    
-    <style>
-        .severity-indicator {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid;
-            background-color: #f8f9fa;
-        }
-        
-        .severity-indicator.leve {
-            border-left-color: #28a745;
-            background-color: #d4edda;
-        }
-        
-        .severity-indicator.intermedio {
-            border-left-color: #ffc107;
-            background-color: #fff3cd;
-        }
-        
-        .severity-indicator.grave {
-            border-left-color: #dc3545;
-            background-color: #f8d7da;
-        }
-        
-        .severity-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .severity-icon {
-            width: 20px;
-            height: 20px;
-        }
-        
-        .severity-text {
-            font-size: 0.95rem;
-        }
-        
-        .severity-description {
-            font-size: 0.85rem;
-            color: #6c757d;
-            line-height: 1.4;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .flash-messages {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            min-width: 300px;
-        }
-        
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            border: 1px solid transparent;
-        }
-        
-        .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-        
-        .alert-error {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-    </style>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar Lucide icons
-            lucide.createIcons();
-            
-            // Mapeo de severidades automáticas
-            const severidadMap = {
-                // Graves - Requieren acción inmediata
-                'acoso': { nivel: 'grave', texto: 'Grave', descripcion: 'Este reporte será clasificado como de ALTA PRIORIDAD y será revisado de inmediato por el equipo de convivencia escolar.' },
-                'bullying': { nivel: 'grave', texto: 'Grave', descripcion: 'Este reporte será clasificado como de ALTA PRIORIDAD y será revisado de inmediato por el equipo de convivencia escolar.' },
-                'violencia': { nivel: 'grave', texto: 'Grave', descripcion: 'Este reporte será clasificado como de ALTA PRIORIDAD y será revisado de inmediato por el equipo de convivencia escolar.' },
-                'ciberacoso': { nivel: 'grave', texto: 'Grave', descripcion: 'Este reporte será clasificado como de ALTA PRIORIDAD y será revisado de inmediato por el equipo de convivencia escolar.' },
-                
-                // Intermedios - Requieren intervención
-                'discriminacion': { nivel: 'intermedio', texto: 'Intermedio', descripcion: 'Este reporte será clasificado como de MEDIA PRIORIDAD y será revisado dentro de las próximas 24 horas.' },
-                
-                // Leves - Situaciones que requieren atención
-                'conflicto': { nivel: 'leve', texto: 'Leve', descripcion: 'Este reporte será clasificado como de PRIORIDAD BAJA y será revisado en el orden de llegada.' },
-                'indisciplina': { nivel: 'leve', texto: 'Leve', descripcion: 'Este reporte será clasificado como de PRIORIDAD BAJA y será revisado en el orden de llegada.' },
-                'otro': { nivel: 'leve', texto: 'Leve', descripcion: 'Este reporte será clasificado como de PRIORIDAD BAJA y será revisado en el orden de llegada.' }
-            };
-            
-            // Elementos del DOM
-            const tipoReporteSelect = document.getElementById('tipoReporte');
-            const severidadHidden = document.getElementById('severidad');
-            const severidadIndicator = document.getElementById('severidadIndicator');
-            const severidadText = document.getElementById('severidadText');
-            const severidadDescription = document.getElementById('severidadDescription');
-            
-            // Función para actualizar la severidad automáticamente
-            function actualizarSeveridad() {
-                const tipoSeleccionado = tipoReporteSelect.value;
-                
-                if (tipoSeleccionado && severidadMap[tipoSeleccionado]) {
-                    const severidadInfo = severidadMap[tipoSeleccionado];
-                    
-                    // Actualizar campo oculto
-                    severidadHidden.value = severidadInfo.nivel;
-                    
-                    // Mostrar indicador
-                    severidadIndicator.classList.remove('hidden');
-                    severidadIndicator.className = `severity-indicator ${severidadInfo.nivel}`;
-                    
-                    // Actualizar texto
-                    severidadText.textContent = severidadInfo.texto;
-                    severidadDescription.textContent = severidadInfo.descripcion;
-                    
-                    // Actualizar icono según severidad
-                    const icono = severidadIndicator.querySelector('.severity-icon');
-                    icono.setAttribute('data-lucide', 
-                        severidadInfo.nivel === 'grave' ? 'alert-octagon' : 
-                        severidadInfo.nivel === 'intermedio' ? 'alert-triangle' : 'info'
-                    );
-                    lucide.createIcons();
-                    
-                } else {
-                    // Ocultar indicador si no hay selección
-                    severidadIndicator.classList.add('hidden');
-                    severidadHidden.value = 'leve'; // Valor por defecto
-                }
-            }
-            
-            // Escuchar cambios en el tipo de reporte
-            tipoReporteSelect.addEventListener('change', actualizarSeveridad);
-            
-            // Inicializar al cargar la página
-            actualizarSeveridad();
-        });
-    </script>
+    <!-- Main Form -->
+    <div id="mainForm">
+      <form method="POST" id="reportingForm">
+        <!-- Personal Information -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i data-lucide="user" size="20"></i> Información Personal</h3>
+            <p class="card-description">Proporcione sus datos personales para el registro del reporte</p>
+          </div>
+          <div class="card-content">
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="rut" class="label"><i data-lucide="user" size="16"></i> RUT *</label>
+                <input type="text" id="rut" name="rut" placeholder="12.345.678-9" class="input" required>
+                <div class="error-message" id="rutError"></div>
+              </div>
+              <div class="form-group">
+                <label for="curso" class="label"><i data-lucide="graduation-cap" size="16"></i> Curso *</label>
+                <input type="text" id="curso" name="curso" placeholder="Ej: 3° Medio A" class="input" required>
+                <div class="error-message" id="cursoError"></div>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="nombre" class="label">Nombre Completo *</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" class="input" required>
+                <div class="error-message" id="nombreError"></div>
+              </div>
+              <div class="form-group">
+                <label for="correo" class="label">
+                  <i data-lucide="mail" size="16"></i> Correo Electrónico
+                  <span class="optional-badge">Opcional</span>
+                </label>
+                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" class="input">
+                <div class="error-message" id="correoError"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Type -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i data-lucide="alert-triangle" size="20"></i> Tipo de Reporte</h3>
+            <p class="card-description">Seleccione la categoría que mejor describe la situación a reportar</p>
+          </div>
+          <div class="card-content">
+            <div class="form-group">
+              <label for="tipoReporte" class="label">Categoría del Incidente *</label>
+              <select id="tipoReporte" name="tipoReporte" class="select" required>
+                <option value="">Seleccione el tipo de reporte</option>
+                <option value="acoso" data-severidad="grave">Acoso</option>
+                <option value="bullying" data-severidad="grave">Bullying</option>
+                <option value="discriminacion" data-severidad="intermedio">Discriminación</option>
+                <option value="violencia" data-severidad="grave">Violencia</option>
+                <option value="ciberacoso" data-severidad="grave">Ciberacoso</option>
+                <option value="conflicto" data-severidad="leve">Conflicto entre estudiantes</option>
+                <option value="indisciplina" data-severidad="leve">Indisciplina</option>
+                <option value="otro" data-severidad="leve">Otro</option>
+              </select>
+              <div class="error-message" id="tipoReporteError"></div>
+            </div>
+
+        <!-- Declaration -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i data-lucide="file-text" size="20"></i> Declaración del Incidente</h3>
+            <p class="card-description">
+              Describa detalladamente la situación. Incluya fechas, lugares y contexto relevante
+            </p>
+          </div>
+          <div class="card-content">
+            <div class="form-group">
+              <label for="declaracion" class="label">Descripción Detallada *</label>
+              <textarea 
+                id="declaracion" 
+                name="declaracion" 
+                placeholder="Describa detalladamente la situación que desea reportar. Incluya fechas, lugares y personas involucradas si es posible. Proporcione todo el contexto que considere relevante para la investigación."
+                class="textarea"
+                required
+              ></textarea>
+              <div class="textarea-footer">
+                <div class="character-count">
+                  <span id="charCount">0</span> caracteres (mínimo 20)
+                </div>
+                <div class="error-message" id="declaracionError"></div>
+              </div>
+              <div class="security-notice">
+                <i data-lucide="shield" size="16"></i>
+                Su declaración será tratada con la máxima confidencialidad y procesada según nuestros protocolos de seguridad
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="card">
+          <div class="card-content">
+            <div class="button-group">
+              <button type="submit" id="submitBtn" class="btn btn-primary">
+                <i data-lucide="send" size="18"></i>
+                Enviar Reporte Confidencial
+              </button>
+              <button type="button" id="anonymousBtn" class="btn btn-outline">
+                <i data-lucide="shield" size="18"></i>
+                Enviar Reporte Anónimo
+              </button>
+            </div>
+            <p class="privacy-notice">
+              <i data-lucide="lock" size="16"></i>
+              Al enviar este formulario, acepta que la información será procesada de acuerdo a nuestras políticas de privacidad
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="/static/js/reporte.js"></script>
 </body>
 </html>

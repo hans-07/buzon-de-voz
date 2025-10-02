@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Administrativo - Sistema de Reportes</title>
+    <link rel="stylesheet" href="/static/styles/login.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
+</head>
+<body>
+  <!-- Mensajes Flash -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1><i data-lucide="shield" size="20"></i> Sistema de Reportes</h1>
+        <p>Acceso Administrativo</p>
+      </div>
+
+      <div class="login-body">
+        <form method="POST" action="{{ url_for('login') }}">
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" class="form-control" id="email" name="email" 
+                   placeholder="admin@colegio.com" required>
+          </div>
+
+          <div class="mb-4">
+            <label for="password" class="form-label">Contraseña</label>
+            <div class="password-wrapper">
+              <input type="password" class="form-control" id="password" name="password" 
+                     placeholder="••••••••" required>
+              <span class="password-toggle" onclick="togglePassword('password')">
+                <i data-lucide="eye" size="18"></i>
+              </span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-login w-100">
+            <i data-lucide="log-in" size="18"></i> Ingresar
+          </button>
+
+          <div class="text-center mt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">
+              <i data-lucide="arrow-left" size="16"></i> Volver al Inicio
+            </a>
+          </div>
+        </form>
+
+        <div class="info-note">
+          <i data-lucide="info" size="16"></i>
+          Solo personal autorizado puede acceder al panel de administración.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.nextElementSibling.querySelector('[data-lucide]');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        input.type = 'password';
+        icon.setAttribute('data-lucide', 'eye');
+      }
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

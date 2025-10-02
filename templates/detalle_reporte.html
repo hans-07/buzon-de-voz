@@ -1,104 +1,182 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
-    <title>Detalle del Reporte</title>
-    <style>
-        .severidad-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-        .severidad-leve { background-color: #d4edda; color: #155724; }
-        .severidad-intermedio { background-color: #fff3cd; color: #856404; }
-        .severidad-grave { background-color: #f8d7da; color: #721c24; }
-        .card { margin-bottom: 1rem; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
+  <title>Detalle del Reporte #{{ reporte.id }}</title>
+    <link rel="stylesheet" href="/static/styles/detalle_reporte.css">
 </head>
 <body>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Detalle del Reporte #{{ reporte.id }}</h1>
-            <a href="{{ url_for('admin') }}" class="btn btn-secondary">
-                <i data-lucide="arrow-left"></i> Volver al Panel
-            </a>
+  <div class="container py-4">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="header-content">
+        <div class="header-title">
+          <h1>Reporte #{{ reporte.id }}</h1>
+          <p>Detalles completos del reporte</p>
+        </div>
+        <div class="header-actions">
+          <a href="{{ url_for('admin') }}" class="btn">
+            <i data-lucide="arrow-left" size="16"></i> Panel
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="row">
+      <!-- Columna Izquierda -->
+      <div class="col-lg-8">
+        <!-- Información del Estudiante -->
+        <div class="card">
+          <div class="card-header">
+            <h5><i data-lucide="user" size="18"></i> Información del Estudiante</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <table class="info-table">
+                  <tr>
+                    <th><i data-lucide="user"></i> Nombre:</th>
+                    <td>{{ reporte.nombre }}</td>
+                  </tr>
+                  <tr>
+                    <th><i data-lucide="id-card"></i> RUT:</th>
+                    <td>{{ reporte.rut }}</td>
+                  </tr>
+                  <tr>
+                    <th><i data-lucide="calendar"></i> Fecha:</th>
+                    <td>{{ reporte.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <table class="info-table">
+                  <tr>
+                    <th><i data-lucide="graduation-cap"></i> Curso:</th>
+                    <td>{{ reporte.curso }}</td>
+                  </tr>
+                  <tr>
+                    <th><i data-lucide="mail"></i> Correo:</th>
+                    <td>
+                      {% if reporte.correo %}
+                        <a href="mailto:{{ reporte.correo }}" class="text-decoration-none">{{ reporte.correo }}</a>
+                      {% else %}
+                        <span class="text-muted">No proporcionado</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th><i data-lucide="clock"></i> Actualizado:</th>
+                    <td>
+                      {% if reporte.updated_at and reporte.updated_at != reporte.created_at %}
+                        {{ reporte.updated_at.strftime('%d/%m/%Y %H:%M') }}
+                      {% else %}
+                        <span class="text-muted">Sin actualizaciones</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Información Básica -->
+        <!-- Descripción del Incidente -->
         <div class="card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">Información Básica</h5>
+          <div class="card-header">
+            <h5><i data-lucide="file-text" size="18"></i> Descripción del Incidente</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <strong>Categoría:</strong>
+              <span class="badge badge-category ms-2">{{ reporte.categoria|title }}</span>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Nombre:</strong> {{ reporte.nombre }}<br>
-                        <strong>RUT:</strong> {{ reporte.rut }}<br>
-                        <strong>Curso:</strong> {{ reporte.curso }}
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Fecha de Creación:</strong> {{ reporte.created_at.strftime('%d/%m/%Y %H:%M') if reporte.created_at else 'N/A' }}<br>
-                        <strong>Tipo de Reporte:</strong> {{ reporte.tipo_reporte|title }}<br>
-                        <strong>Severidad:</strong> 
-                        <span class="severidad-badge severidad-{{ reporte.severidad }}">
-                            {{ reporte.severidad|title }}
-                        </span>
-                    </div>
-                </div>
+            <div class="descripcion-box">
+              {{ reporte.descripcion }}
             </div>
+            <div class="descripcion-meta">
+              <i data-lucide="info" size="14"></i>
+              {{ reporte.descripcion|length }} caracteres
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Información de Contacto -->
+      <!-- Columna Derecha -->
+      <div class="col-lg-4">
+        <!-- Estado y Prioridad -->
         <div class="card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">Información de Contacto</h5>
+          <div class="card-header">
+            <h5><i data-lucide="activity" size="18"></i> Estado y Prioridad</h5>
+          </div>
+          <div class="card-body text-center">
+            <div class="mb-4">
+              <div class="text-muted small mb-1">Estado actual</div>
+              <span class="badge badge-estado-{{ reporte.estado }} fs-6 px-3 py-2">
+                {{ reporte.estado|title }}
+              </span>
             </div>
-            <div class="card-body">
-                <strong>Correo Electrónico:</strong> 
-                {{ reporte.correo if reporte.correo else 'No proporcionado' }}
+            <div>
+              <div class="text-muted small mb-1">Prioridad</div>
+              <span class="badge badge-prioridad-{{ reporte.prioridad }} fs-6 px-3 py-2">
+                {{ reporte.prioridad|title }}
+              </span>
             </div>
-        </div>
-
-        <!-- Declaración Completa -->
-        <div class="card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">Declaración Completa</h5>
-            </div>
-            <div class="card-body">
-                <div style="white-space: pre-wrap; line-height: 1.6;">
-                    {{ reporte.declaracion }}
-                </div>
-            </div>
+          </div>
         </div>
 
         <!-- Acciones -->
         <div class="card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">Acciones</h5>
+          <div class="card-header">
+            <h5><i data-lucide="settings" size="18"></i> Acciones</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              {% if reporte.estado != 'en_revision' %}
+              <a href="{{ url_for('cambiar_estado', reporte_id=reporte.id, nuevo_estado='en_revision') }}" 
+                 class="action-btn btn-warning">
+                <i data-lucide="clock"></i> En revisión
+              </a>
+              {% endif %}
+              
+              {% if reporte.estado != 'resuelto' %}
+              <a href="{{ url_for('cambiar_estado', reporte_id=reporte.id, nuevo_estado='resuelto') }}" 
+                 class="action-btn btn-success">
+                <i data-lucide="check"></i> Marcar resuelto
+              </a>
+              {% endif %}
+              
+              {% if reporte.estado != 'pendiente' %}
+              <a href="{{ url_for('cambiar_estado', reporte_id=reporte.id, nuevo_estado='pendiente') }}" 
+                 class="action-btn btn-secondary">
+                <i data-lucide="rotate-ccw"></i> Volver a pendiente
+              </a>
+              {% endif %}
+              
+              <button class="action-btn btn-outline-primary" onclick="window.print()">
+                <i data-lucide="printer"></i> Imprimir
+              </button>
             </div>
-            <div class="card-body">
-                <button class="btn btn-primary">
-                    <i data-lucide="message-square"></i> Agregar Comentario
-                </button>
-                <button class="btn btn-warning">
-                    <i data-lucide="edit"></i> Cambiar Estado
-                </button>
-                <button class="btn btn-danger">
-                    <i data-lucide="archive"></i> Archivar Reporte
-                </button>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script>
-        lucide.createIcons();
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+    
+    document.querySelectorAll('a[href*="cambiar_estado"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (!confirm('¿Está seguro de que desea cambiar el estado de este reporte?')) {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
