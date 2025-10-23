@@ -1,81 +1,128 @@
-:root {
-      --bg: #f8f9fa;
-      --surface: #ffffff;
-      --text: #1a1a1a;
-      --text-muted: #666666;
-      --border: #eaeaea;
-      --primary: #4f46e5;
-      --radius: 8px;
+    :root {
+      --color-bg: #f9fafb;
+      --color-surface: #ffffff;
+      --color-text: #1f2937;
+      --color-text-muted: #6b7280;
+      --color-primary: #2563eb;
+      --color-danger: #dc2626;
+      --border-radius: 12px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.05);
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
     .login-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
+      width: 100%;
+      max-width: 420px;
+      padding: var(--spacing-md);
     }
 
     .login-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      background: var(--color-surface);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
     .login-header {
       text-align: center;
-      padding: 2rem 1.5rem 1.5rem;
+      padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
     }
 
     .login-header h1 {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 1.5rem;
-      margin-bottom: 0.25rem;
-      color: var(--text);
+      color: var(--color-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
     }
 
     .login-header p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin: 0;
+      color: var(--color-text-muted);
+      margin: 0.25rem 0 0;
+      font-size: 0.9375rem;
     }
 
     .login-body {
-      padding: 0 1.5rem 2rem;
+      padding: 0 var(--spacing-md) var(--spacing-lg);
+    }
+
+    /* Mensajes flash */
+    .flash-messages {
+      padding: 0 var(--spacing-md) var(--spacing-md);
+    }
+
+    .flash-alert {
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--border-radius);
+      font-size: 0.875rem;
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+    }
+
+    .flash-alert--error {
+      background: #fee2e2;
+      color: var(--color-danger);
+    }
+
+    .flash-alert--success {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    /* Formulario */
+    .form-group {
+      margin-bottom: var(--spacing-md);
     }
 
     .form-label {
-      font-weight: 500;
+      display: block;
       font-size: 0.875rem;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-
-    .form-control {
-      padding: 0.625rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 0.95rem;
-      transition: border-color 0.2s ease;
-    }
-
-    .form-control:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      font-weight: 600;
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-text);
     }
 
     .password-wrapper {
       position: relative;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     .password-toggle {
@@ -83,71 +130,61 @@
       right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-muted);
       cursor: pointer;
-      width: 20px;
-      height: 20px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
     }
 
     .btn-login {
-      background: var(--primary);
+      background: var(--color-primary);
       color: white;
       border: none;
-      padding: 0.75rem;
+      padding: 0.875rem;
+      font-size: 1rem;
       font-weight: 600;
-      border-radius: var(--radius);
-      font-size: 0.95rem;
-      transition: background 0.2s ease;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      transition: background 0.2s;
     }
 
     .btn-login:hover {
-      background: #4338ca;
+      background: #1d4ed8;
     }
 
-    .btn-outline-secondary {
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.5rem 1rem;
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      color: var(--color-text-muted);
+      text-decoration: none;
       font-size: 0.875rem;
-      border-radius: var(--radius);
+      padding: var(--spacing-xs);
+      border-radius: 6px;
+      margin-top: var(--spacing-md);
     }
 
-    .btn-outline-secondary:hover {
-      background: var(--bg);
-      color: var(--text);
+    .back-link:hover {
+      background: #f3f4f6;
+      color: var(--color-primary);
     }
 
     .info-note {
-      text-align: center;
-      margin-top: 1.5rem;
-      color: var(--text-muted);
+      margin-top: var(--spacing-lg);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid #e5e7eb;
       font-size: 0.8125rem;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-xs);
     }
 
-    .info-note i {
-      width: 16px;
-      height: 16px;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
-
-    /* Flash messages */
-    .flash-messages {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      min-width: 300px;
-    }
-
-    .alert {
-      border: none;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    @media (max-width: 480px) {
-      .login-card {
-        max-width: 100%;
-      }
+    .info-note svg {
+      flex-shrink: 0;
+      margin-top: 0.125rem;
     }
