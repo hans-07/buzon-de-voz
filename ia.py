@@ -3,7 +3,9 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+)
 
 def chat(mensaje_usuario: str) -> str:
     """Llama al modelo para clasificar la gravedad. Devuelve una de: 'alta','media','baja','spam'."""
