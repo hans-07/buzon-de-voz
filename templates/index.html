@@ -44,33 +44,24 @@
     {% endif %}
     {% endwith %}
 
-    <!-- Hero Section -->
+        <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
+        <div class="container hero-grid">
             <div class="hero-content">
-                <div class="badge">
-                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
-                    Sistema Inteligente con IA
-                </div>
-                <h2 class="hero-title">Tu voz importa, nuestra IA protege tu seguridad</h2>
+                <h1 class="hero-title">
+                    Tu voz importa,<br>
+                    evaluamos con IA<br>
+                    para actuar más rápido
+                </h1>
                 <p class="hero-description">
-                    Un espacio seguro donde puedes reportar cualquier situación que te haga sentir incómodo, asustado o
-                    en peligro. Nuestra Inteligencia Artificial analiza y clasifica automáticamente los reportes para
-                    una respuesta más rápida y efectiva.
+                    Un espacio seguro con IA que analiza cada reporte para priorizar situaciones urgentes. Reporta cualquier situación que te haga sentir incómodo, asustado o en peligro. Actuaremos de inmediato según la gravedad.
                 </p>
-                <div class="hero-buttons">
-                    <a href="/enviar_reporte" class="btn-primary">
-                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                        </svg>
-                        Hacer un Reporte
-                    </a>
-                </div>
+                <a href="/enviar_reporte" class="btn-report">
+                    Hacer un Reporte
+                </a>
+            </div>
+            <div class="hero-image">
+                <img src="/static/img/niña-tellme.png" alt="Estudiante usando TellMe" class="student-illustration">
             </div>
         </div>
     </section>

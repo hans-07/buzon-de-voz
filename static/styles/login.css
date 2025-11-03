@@ -1,12 +1,14 @@
 :root {
-  --color-bg: #f9fafb;
+  --color-bg: #f0fdfa;
   --color-surface: #ffffff;
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
-  --color-primary: #2563eb;
+  --color-text: #0f172a;
+  --color-text-muted: #134e4a;
+  --color-primary: #14b8a6;
+  --color-primary-dark: #0d9488;
+  --color-primary-light: #99f6e4;
   --color-danger: #dc2626;
   --border-radius: 12px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 12px rgba(20, 184, 166, 0.08);
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -184,12 +186,14 @@ body {
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  transition: background 0.2s;
+  transition: all 0.2s ease;
   margin-top: var(--spacing-sm);
 }
 
 .btn-login:hover {
-  background: #1d4ed8;
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.15);
 }
 
 .back-link {

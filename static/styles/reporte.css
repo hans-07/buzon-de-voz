@@ -1,15 +1,17 @@
     :root {
-      --color-bg: #f9fafb;
+      --color-bg: #f0fdfa;
       --color-surface: #ffffff;
-      --color-text: #1f2937;
-      --color-text-muted: #6b7280;
-      --color-primary: #2563eb;
+      --color-text: #0f172a;
+      --color-text-muted: #134e4a;
+      --color-primary: #14b8a6;
+      --color-primary-dark: #0d9488;
+      --color-primary-light: #99f6e4;
       --color-success: #059669;
-      --color-warning: #d97706;
+      --color-warning: #0d9488;
       --color-danger: #dc2626;
       --color-info: #0891b2;
       --border-radius: 12px;
-      --shadow: 0 4px 12px rgba(0,0,0,0.04);
+      --shadow: 0 4px 12px rgba(20, 184, 166, 0.08);
       --spacing-xs: 0.25rem;
       --spacing-sm: 0.5rem;
       --spacing-md: 1rem;
@@ -123,7 +125,7 @@
 
     .toggle-btn.active {
       border-color: var(--color-primary);
-      background: #eff6ff;
+      background: #f0fdfa;
       color: var(--color-primary);
     }
 
@@ -144,7 +146,7 @@
       align-items: center;
       gap: var(--spacing-sm);
       text-decoration: none;
-      transition: opacity 0.2s;
+      transition: all 0.2s ease;
       border: none;
       justify-content: center;
     }
@@ -155,7 +157,9 @@
     }
 
     .btn-primary:hover {
-      opacity: 0.9;
+      background: var(--color-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(20, 184, 166, 0.15);
     }
 
     .privacy-notice {
