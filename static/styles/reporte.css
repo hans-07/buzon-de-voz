@@ -30,25 +30,6 @@
       padding: var(--spacing-lg);
     }
 
-    /* Mensajes Flash */
-    .flash-message {
-      padding: var(--spacing-md);
-      border-radius: var(--border-radius);
-      margin-bottom: var(--spacing-md);
-      font-weight: 500;
-    }
-
-    .flash-success {
-      background: #d1fae5;
-      color: var(--color-success);
-      border: 1px solid #a7f3d0;
-    }
-
-    .flash-error {
-      background: #fee2e2;
-      color: var(--color-danger);
-      border: 1px solid #fecaca;
-    }
 
     /* Card */
     .card {

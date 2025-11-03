@@ -71,16 +71,6 @@
                     {% endif %}
                   </span>
                 </div>
-                <div class="info-row">
-                  <span class="info-label">Última actualización</span>
-                  <span class="info-value">
-                    {% if reporte.updated_at and reporte.updated_at != reporte.created_at %}
-                      {{ reporte.updated_at.strftime('%d/%m/%Y %H:%M') }}
-                    {% else %}
-                      Sin actualizaciones
-                    {% endif %}
-                  </span>
-                </div>
               </div>
             </div>
           </div>

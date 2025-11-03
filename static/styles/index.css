@@ -1,74 +1,10 @@
-/* --- NAVBAR RESPONSIVO Y MENÚ HAMBURGUESA --- */
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-}
-
-.navbar-toggle {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-left: 1rem;
-    z-index: 100;
-}
-.navbar-toggle-bar {
-    width: 1.8rem;
-    height: 0.22rem;
-    background: #222;
-    border-radius: 2px;
-    margin: 0.18rem 0;
-    transition: all 0.3s;
-}
-
-.navbar-menu {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-/* Botón de iniciar sesión arriba a la derecha */
-.btn-login {
-    margin-left: auto;
-    padding: 0.5rem 1.2rem;
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
-    transition: background 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.btn-login:hover {
-    background: #1e40af;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-}
-}
-
+/* --- VARIABLES Y RESET --- */
 :root {
     /* Colores calmantes para confianza y seguridad */
-    justify-content: space-between;
     --primary: #4f46e5;
     --secondary: #7c3aed;
     --accent: #8b5cf6;
+    --ai-color: #06b6d4;
     --background: #ffffff;
     --foreground: #1f2937;
     --card: #f9fafb;
@@ -78,6 +14,13 @@
     --radius: 8px;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- ESTILOS GENERALES --- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
@@ -100,7 +43,7 @@ body {
     color: var(--primary);
 }
 
-/* Header */
+/* --- HEADER Y NAVEGACIÓN --- */
 .header {
     background: rgba(249, 250, 251, 0.8);
     backdrop-filter: blur(8px);
@@ -113,8 +56,9 @@ body {
 
 .header-content {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    position: relative;
 }
 
 .logo {
@@ -122,21 +66,74 @@ body {
     align-items: center;
 }
 
-/* Ajuste de la imagen del logo */  
 .logo img {
     height: 4rem;
     width: 4rem;
     display: block;
 }
 
-
 .logo h1 {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--foreground);
+    margin: 0 0 0 0.75rem;
 }
 
-/* Buttons */
+/* Menú hamburguesa responsivo */
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 1rem;
+    z-index: 100;
+}
+
+.navbar-toggle-bar {
+    width: 1.8rem;
+    height: 0.22rem;
+    background: #222;
+    border-radius: 2px;
+    margin: 0.18rem 0;
+    transition: all 0.3s;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Botón de iniciar sesión */
+.btn-login {
+    margin-left: auto;
+    padding: 0.5rem 1.2rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-login:hover {
+    background: #1e40af;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+}
+
+/* --- BOTONES --- */
 .btn-primary {
     background: var(--primary);
     color: white;
@@ -186,10 +183,11 @@ body {
     justify-content: center;
 }
 
-/* Hero Section */
+/* --- HERO SECTION --- */
 .hero {
     padding: 4rem 0;
     text-align: center;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
 }
 
 .hero-content {
@@ -201,12 +199,13 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    background: var(--muted);
-    color: var(--muted-foreground);
+    background: var(--ai-color);
+    color: white;
     padding: 0.5rem 1rem;
     border-radius: 9999px;
     font-size: 0.875rem;
     margin-bottom: 1rem;
+    font-weight: 600;
 }
 
 .hero-title {
@@ -233,14 +232,7 @@ body {
     align-items: center;
 }
 
-@media (min-width: 640px) {
-    .hero-buttons {
-        flex-direction: row;
-        justify-content: center;
-    }
-}
-
-/* How It Works */
+/* --- HOW IT WORKS SECTION --- */
 .how-it-works {
     padding: 4rem 0;
     background: rgba(243, 244, 246, 0.3);
@@ -266,13 +258,7 @@ body {
 .steps-grid {
     display: grid;
     gap: 2rem;
-    grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-    .steps-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .card {
@@ -281,10 +267,20 @@ body {
     border-radius: var(--radius);
     padding: 1.5rem;
     text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
     margin-bottom: 1rem;
+    flex-shrink: 0;
 }
 
 .card-header h4 {
@@ -313,8 +309,8 @@ body {
 }
 
 .step-icon.secondary {
-    background: rgba(124, 58, 237, 0.1);
-    color: var(--secondary);
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--ai-color);
 }
 
 .step-icon.accent {
@@ -322,12 +318,20 @@ body {
     color: var(--accent);
 }
 
+.card-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .card-content p {
     color: var(--muted-foreground);
     line-height: 1.6;
+    margin: 0;
 }
 
-/* Privacy Section */
+/* --- PRIVACY SECTION --- */
 .privacy {
     padding: 4rem 0;
 }
@@ -370,12 +374,6 @@ body {
     grid-template-columns: 1fr;
 }
 
-@media (min-width: 768px) {
-    .privacy-features {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 .feature {
     display: flex;
     align-items: flex-start;
@@ -399,49 +397,7 @@ body {
     color: var(--muted-foreground);
 }
 
-/* Support Section */
-.support {
-    padding: 4rem 0;
-    background: rgba(243, 244, 246, 0.3);
-}
-
-.support-grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-    .support-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* CTA Section */
-.cta {
-    padding: 4rem 0;
-    text-align: center;
-}
-
-.cta-content {
-    max-width: 32rem;
-    margin: 0 auto;
-}
-
-.cta-content h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--foreground);
-    margin-bottom: 1rem;
-}
-
-.cta-content p {
-    font-size: 1.125rem;
-    color: var(--muted-foreground);
-    margin-bottom: 2rem;
-}
-
-/* Footer */
+/* --- FOOTER --- */
 .footer {
     background: rgba(249, 250, 251, 0.8);
     border-top: 1px solid var(--border);
@@ -454,13 +410,6 @@ body {
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
-}
-
-@media (min-width: 768px) {
-    .footer-content {
-        flex-direction: row;
-        justify-content: space-between;
-    }
 }
 
 .footer-logo {
@@ -504,7 +453,51 @@ body {
     color: var(--muted-foreground);
 }
 
-/* Responsive Design */
+/* --- MENSAJES FLASH --- */
+.flash-message {
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.flash-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.flash-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (min-width: 640px) {
+    .hero-buttons {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 768px) {
+    .privacy-features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 1024px) {
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .hero {
         padding: 2rem 0;
@@ -524,5 +517,30 @@ body {
     
     .privacy-card {
         padding: 1.5rem;
+    }
+    
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .navbar-toggle {
+        display: flex;
+    }
+    
+    .navbar-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .navbar-menu.open {
+        display: flex;
     }
 }

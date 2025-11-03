@@ -3,104 +3,218 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> Administración - TellMe</title>
+  <title>Administración - TellMe</title>
   <link rel="stylesheet" href="/static/styles/admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" />
   <link rel="icon" href="static/img/Tellme.png" type="image/png">
-  
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
+    <!-- Header con alerta crítica integrada -->
     <header class="admin-header">
-      <div>
+      <div class="header-content">
         <h1>Panel de Administración</h1>
         <p>Sistema de Gestión de Reportes Escolares</p>
+        
+        <!-- ALERTA BANNER CRÍTICA -->
+        {% set reportes_criticos = reportes|selectattr('prioridad', 'equalto', 'alta')|selectattr('estado', 'equalto', 'pendiente')|list %}
+        {% if reportes_criticos %}
+        <div class="critical-banner">
+          <div class="banner-content">
+            <div class="banner-alert">
+              <i data-lucide="alert-triangle" size="20"></i>
+              <strong>{{ reportes_criticos|length }} ALERTA(S) CRÍTICA(S)</strong>
+              <span>Requieren atención inmediata</span>
+            </div>
+          </div>
+        </div>
+        {% endif %}
       </div>
       <a href="{{ url_for('logout') }}" class="logout-btn" aria-label="Cerrar sesión">
-        <i data-lucide="log-out" size="16"></i> Cerrar Sesión
+        <i data-lucide="log-out" size="16"></i> <span class="logout-text">Cerrar Sesión</span>
       </a>
     </header>
 
-    <!-- Estadísticas -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <p class="stat-value">{{ reportes|length }}</p>
-        <p class="stat-label">Total Reportes</p>
+    <!-- SISTEMA DE PRIORIDADES VISUAL -->
+    <div class="priority-system">
+      <!-- TARJETA DE ALTA PRIORIDAD - Siempre visible -->
+      <div class="priority-card critical" id="critical-section">
+        <div class="priority-header">
+          <div class="priority-title">
+            <i data-lucide="alert-octagon" size="20"></i>
+            <h2>Alta Prioridad - Atención Inmediata</h2>
+          </div>
+          <div class="priority-stats">
+            <span class="stat-badge critical">
+              <i data-lucide="alert-circle" size="14"></i>
+              {{ reportes|selectattr('prioridad', 'equalto', 'alta')|selectattr('estado', 'equalto', 'pendiente')|list|length }} Pendientes
+            </span>
+            <span class="stat-badge total">
+              <i data-lucide="file-text" size="14"></i>
+              {{ reportes|selectattr('prioridad', 'equalto', 'alta')|list|length }} Total
+            </span>
+          </div>
+        </div>
+        
+        <!-- ÚLTIMOS 6 REPORTES DE ALTA PRIORIDAD PENDIENTES -->
+        {% set reportes_altos_pendientes = reportes|selectattr('prioridad', 'equalto', 'alta')|selectattr('estado', 'equalto', 'pendiente')|sort(attribute='created_at', reverse=true)|list %}
+        {% set ultimos_6_criticos = reportes_altos_pendientes[:6] %}
+        
+        {% if ultimos_6_criticos %}
+        <div class="priority-content">
+          <div class="section-info">
+            <i data-lucide="info" size="14"></i>
+            <span>Mostrando los últimos 6 reportes críticos pendientes</span>
+          </div>
+          
+          <!-- Resumen rápido de críticos -->
+          <div class="critical-summary">
+            {% for reporte in ultimos_6_criticos %}
+            <div class="summary-item pending">
+              <div class="summary-header">
+                <span class="item-id">#{{ reporte.id }}</span>
+                <span class="item-status urgent">
+                  <i data-lucide="alert-triangle" size="12"></i>
+                  Urgente
+                </span>
+              </div>
+              <div class="item-content">
+                <strong>{{ reporte.categoria|title }}</strong>
+                <p>{{ reporte.descripcion|truncate(50) }}</p>
+              </div>
+              <div class="item-meta">
+                <span>{{ reporte.nombre }}</span>
+                <span>{{ reporte.curso }}</span>
+                <span class="item-time">{{ reporte.created_at.strftime('%d/%m %H:%M') }}</span>
+              </div>
+              <div class="item-actions">
+                <a href="{{ url_for('detalle_reporte', reporte_id=reporte.id) }}" class="action-btn small primary">
+                  <i data-lucide="eye" size="12"></i>
+                  Ver
+                </a>
+                <a href="{{ url_for('cambiar_estado', reporte_id=reporte.id, nuevo_estado='resuelto') }}" class="action-btn small success">
+                  <i data-lucide="check" size="12"></i>
+                  Resolver
+                </a>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          
+          {% if reportes_altos_pendientes|length > 6 %}
+          <div class="more-items-notice">
+            <i data-lucide="more-horizontal" size="16"></i>
+            <span>Hay {{ reportes_altos_pendientes|length - 6 }} reportes críticos más. Usa los filtros para ver todos.</span>
+          </div>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="priority-empty">
+          <i data-lucide="check-circle" size="32"></i>
+          <p>No hay reportes de alta prioridad pendientes</p>
+          <small>Todos los reportes críticos han sido atendidos</small>
+        </div>
+        {% endif %}
       </div>
-      <div class="stat-card">
-        <p class="stat-value">{{ reportes|selectattr('estado', 'equalto', 'pendiente')|list|length }}</p>
-        <p class="stat-label">Pendientes</p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-value">{{ reportes|selectattr('prioridad', 'equalto', 'alta')|list|length }}</p>
-        <p class="stat-label">Alta Prioridad</p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-value">{{ reportes|selectattr('es_anonimo', 'equalto', true)|list|length }}</p>
-        <p class="stat-label">Anónimos</p>
-      </div>
-    </div>
 
-    <!-- Tabla -->
+    <!-- TABLA PRINCIPAL MEJORADA -->
     <div class="report-table-card">
       <div class="table-header">
-        <h2><i data-lucide="file-text" size="20"></i> Lista de Reportes</h2>
+        <h2><i data-lucide="file-text" size="18"></i> Todos los Reportes</h2>
+        <div class="table-controls">
+          <div class="priority-filters">
+            <button class="filter-btn active" data-filter="all">
+              <i data-lucide="list" size="14"></i>
+              Todos
+            </button>
+            <button class="filter-btn" data-filter="alta">
+              <i data-lucide="alert-triangle" size="14"></i>
+              Alta ({{ reportes|selectattr('prioridad', 'equalto', 'alta')|list|length }})
+            </button>
+            <button class="filter-btn" data-filter="media">
+              Media ({{ reportes|selectattr('prioridad', 'equalto', 'media')|list|length }})
+            </button>              
+            <button class="filter-btn" data-filter="baja">
+              Baja ({{ reportes|selectattr('prioridad', 'equalto', 'baja')|list|length }})
+            </button>
+            <button class="filter-btn" data-filter="pendiente">
+              <i data-lucide="clock" size="14"></i>
+              Pendientes ({{ reportes|selectattr('estado', 'equalto', 'pendiente')|list|length }})
+            </button>
+          </div>
+          <button class="view-toggle" id="view-toggle">
+            <i data-lucide="table" size="16" id="view-icon"></i>
+            <span id="view-text">Vista tabla</span>
+          </button>
+        </div>
       </div>
+      
       {% if reportes %}
-      <div class="table-responsive">
-        <table>
+      <!-- VISTA TABLA (escritorio) -->
+      <div class="table-responsive desktop-view">
+        <table id="reportes-table">
           <thead>
             <tr>
               <th>#</th>
               <th>Tipo</th>
               <th>Nombre</th>
-              <th>RUT</th>
+              <th class="hide-mobile">RUT</th>
               <th>Curso</th>
               <th>Categoría</th>
               <th>Prioridad</th>
               <th>Estado</th>
-              <th>Fecha</th>
+              <th class="hide-mobile">Fecha</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {% for reporte in reportes %}
-            <tr>
-              <td>{{ reporte.id }}</td>
+            <tr class="reporte-row" data-prioridad="{{ reporte.prioridad }}" data-estado="{{ reporte.estado }}">
+              <td class="reporte-id">{{ reporte.id }}</td>
               <td>
                 {% if reporte.es_anonimo %}
-                  <span class="badge badge-anonimo" aria-label="Reporte anónimo">
-                    <i data-lucide="shield" size="12"></i> Anónimo
+                  <span class="badge badge-anonimo">
+                    <i data-lucide="shield" size="12"></i> Anón
                   </span>
                 {% else %}
-                  <span class="badge badge-identificado" aria-label="Reporte identificado">
-                    <i data-lucide="user" size="12"></i> Identificado
+                  <span class="badge badge-identificado">
+                    <i data-lucide="user" size="12"></i> ID
                   </span>
                 {% endif %}
               </td>
-              <td>{{ reporte.nombre }}</td>
-              <td>{{ reporte.rut }}</td>
+              <td class="nombre-truncate">{{ reporte.nombre }}</td>
+              <td class="hide-mobile">{{ reporte.rut }}</td>
               <td>{{ reporte.curso }}</td>
-              <td><span class="badge badge-identificado">{{ reporte.categoria|title }}</span></td>
+              <td><span class="badge badge-categoria">{{ reporte.categoria|title }}</span></td>
               <td>
                 <span class="badge badge-prioridad-{{ reporte.prioridad }}">
+                  <i data-lucide="
+                    {% if reporte.prioridad == 'alta' %}alert-triangle
+                    {% elif reporte.prioridad == 'media' %}alert-circle
+                    {% else %}info{% endif %}" 
+                    size="12">
+                  </i>
                   {{ reporte.prioridad|title }}
                 </span>
               </td>
               <td>
                 <span class="badge badge-{{ reporte.estado }}">
+                  <i data-lucide="
+                    {% if reporte.estado == 'pendiente' %}clock
+                    {% else %}check-circle{% endif %}" 
+                    size="12">
+                  </i>
                   {{ reporte.estado|title }}
                 </span>
               </td>
-              <td>{{ reporte.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-              <td>
-                <a href="{{ url_for('detalle_reporte', reporte_id=reporte.id) }}" class="action-btn" title="Ver detalles" aria-label="Ver detalles del reporte {{ reporte.id }}">
-                  <i data-lucide="eye" size="16"></i>
+              <td class="hide-mobile">{{ reporte.created_at.strftime('%d/%m/%Y') }}</td>
+              <td class="actions-cell">
+                <a href="{{ url_for('detalle_reporte', reporte_id=reporte.id) }}" class="action-btn" title="Ver detalles">
+                  <i data-lucide="eye" size="14"></i>
                 </a>
                 {% if reporte.estado == 'pendiente' %}
-                <a href="{{ url_for('cambiar_estado', reporte_id=reporte.id, nuevo_estado='resuelto') }}" class="action-btn" title="Marcar como resuelto" aria-label="Marcar reporte {{ reporte.id }} como resuelto">
-                  <i data-lucide="check" size="16"></i>
+                <a href="{{ url_for('cambiar_estado', reporte_id=reporte.id, nuevo_estado='resuelto') }}" class="action-btn" title="Resolver">
+                  <i data-lucide="check" size="14"></i>
                 </a>
                 {% endif %}
               </td>
@@ -109,9 +223,83 @@
           </tbody>
         </table>
       </div>
+
+      <!-- VISTA TARJETAS (móvil) -->
+      <div class="cards-view mobile-view">
+        {% for reporte in reportes %}
+        <div class="reporte-card" data-prioridad="{{ reporte.prioridad }}" data-estado="{{ reporte.estado }}">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-id">#{{ reporte.id }}</span>
+              <span class="card-categoria">{{ reporte.categoria|title }}</span>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-prioridad-{{ reporte.prioridad }} mobile-badge">
+                <i data-lucide="
+                  {% if reporte.prioridad == 'alta' %}alert-triangle
+                  {% elif reporte.prioridad == 'media' %}alert-circle
+                  {% else %}info{% endif %}" 
+                  size="12">
+                </i>
+                {{ reporte.prioridad|title }}
+              </span>
+              <span class="badge badge-{{ reporte.estado }} mobile-badge">
+                <i data-lucide="
+                  {% if reporte.estado == 'pendiente' %}clock
+                  {% else %}check-circle{% endif %}" 
+                  size="12">
+                </i>
+                {{ reporte.estado|title }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <div class="card-row">
+              <i data-lucide="user" size="14"></i>
+              <span class="card-text">{{ reporte.nombre }}</span>
+              {% if reporte.es_anonimo %}
+              <span class="badge badge-anonimo mobile-badge">
+                <i data-lucide="shield" size="10"></i> Anónimo
+              </span>
+              {% endif %}
+            </div>
+            
+            <div class="card-row">
+              <i data-lucide="book" size="14"></i>
+              <span class="card-text">{{ reporte.curso }}</span>
+            </div>
+            
+            <div class="card-row">
+              <i data-lucide="calendar" size="14"></i>
+              <span class="card-text">{{ reporte.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+            </div>
+            
+            {% if reporte.descripcion %}
+            <div class="card-descripcion">
+              <p>{{ reporte.descripcion|truncate(80) }}</p>
+            </div>
+            {% endif %}
+          </div>
+          
+          <div class="card-actions">
+            <a href="{{ url_for('detalle_reporte', reporte_id=reporte.id) }}" class="card-btn primary">
+              <i data-lucide="eye" size="14"></i>
+              Detalles
+            </a>
+            {% if reporte.estado == 'pendiente' %}
+            <a href="{{ url_for('cambiar_estado', reporte_id=reporte.id, nuevo_estado='resuelto') }}" class="card-btn success">
+              <i data-lucide="check" size="14"></i>
+              Resolver
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
       {% else %}
       <div class="empty-state">
-        <i data-lucide="inbox" size="64"></i>
+        <i data-lucide="inbox" size="48"></i>
         <h3>No hay reportes registrados</h3>
         <p>Los nuevos reportes aparecerán aquí automáticamente.</p>
       </div>
@@ -120,6 +308,6 @@
   </div>
 
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script>lucide.createIcons();</script>
+  <script src="/static/js/admin.js"></script>
 </body>
 </html>
