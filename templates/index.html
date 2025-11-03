@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/styles/index.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
-    <title>TellMe</title>
+    <title>TellMe - Sistema Inteligente de Reportes</title>
     <link rel="icon" href="static/img/Tellme.png" type="image/png">
 </head>
 
@@ -33,33 +33,35 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+        <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
+        <div class="container hero-grid">
             <div class="hero-content">
-                <div class="badge">
-                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
-                    Espacio Seguro y Confidencial
-                </div>
-                <h2 class="hero-title">Tu voz importa, tu seguridad es nuestra prioridad</h2>
+                <h1 class="hero-title">
+                    Tu voz importa,<br>
+                    evaluamos con IA<br>
+                    para actuar más rápido
+                </h1>
                 <p class="hero-description">
-                    Un espacio seguro donde puedes reportar cualquier situación que te haga sentir incómodo, asustado o
-                    en
-                    peligro. Tu reporte llegará directamente a inspectoría.
+                    Un espacio seguro con IA que analiza cada reporte para priorizar situaciones urgentes. Reporta cualquier situación que te haga sentir incómodo, asustado o en peligro. Actuaremos de inmediato según la gravedad.
                 </p>
-                <div class="hero-buttons">
-                    <a href="/enviar_reporte" class="btn-primary">
-                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                        </svg>
-                        Hacer un Reporte
-                    </a>
-                </div>
+                <a href="/enviar_reporte" class="btn-report">
+                    Hacer un Reporte
+                </a>
+            </div>
+            <div class="hero-image">
+                <img src="/static/img/niña-tellme.png" alt="Estudiante usando TellMe" class="student-illustration">
             </div>
         </div>
     </section>
@@ -69,7 +71,7 @@
         <div class="container">
             <div class="section-header">
                 <h3>¿Cómo Funciona?</h3>
-                <p>Tres pasos simples para hacer tu reporte</p>
+                <p>Cuatro pasos simples para hacer tu reporte</p>
             </div>
             <div class="steps-grid">
                 <div class="card">
@@ -90,7 +92,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <div class="step-icon secondary">
+                        <div class="step-icon primary">
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -117,11 +119,28 @@
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                             </svg>
                         </div>
-                        <h4>3. Recibimos tu Reporte</h4>
+                        <h4>3. Análisis con IA</h4>
                     </div>
                     <div class="card-content">
-                        <p>El inspector revisará tu reporte y tomará las medidas necesarias para ayudarte y resolver la
-                            situación.</p>
+                        <p>Nuestra Inteligencia Artificial analiza y clasifica automáticamente tu reporte por urgencia y
+                            tipo, priorizando casos críticos.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="step-icon primary">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <h4>4. Respuesta Rápida</h4>
+                    </div>
+                    <div class="card-content">
+                        <p>El inspector revisará tu reporte ya clasificado y tomará las medidas necesarias para ayudarte
+                            y resolver la situación.</p>
                     </div>
                 </div>
             </div>
@@ -161,8 +180,9 @@
                                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                         </svg>
                         <div>
-                            <h4>Sin Juicios</h4>
-                            <p>Este es un espacio libre de juicios donde puedes expresarte con confianza.</p>
+                            <h4>IA Ética y Segura</h4>
+                            <p>Nuestra Inteligencia Artificial procesa la información manteniendo tu anonimato y
+                                privacidad.</p>
                         </div>
                     </div>
                     <div class="feature">
@@ -185,7 +205,8 @@
                         </svg>
                         <div>
                             <h4>Respuesta Rápida</h4>
-                            <p>Nos comprometemos a revisar y responder a tu reporte lo antes posible.</p>
+                            <p>Gracias a nuestra IA, nos comprometemos a revisar y responder a tu reporte lo antes
+                                posible.</p>
                         </div>
                     </div>
                 </div>
@@ -193,19 +214,17 @@
         </div>
     </section>
 
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
                     <img src="/static/img/Tellme.png" alt="Logo TellMe">
-                    <span>TellMe</span>
+                    <span>TellMe - Sistema Inteligente</span>
                 </div>
-
             </div>
             <div class="footer-bottom">
-                <p>© 2025 TellMe. Comprometidos con tu seguridad y bienestar.</p>
+                <p>© 2025 TellMe. Comprometidos con tu seguridad y bienestar mediante tecnología IA.</p>
             </div>
         </div>
     </footer>

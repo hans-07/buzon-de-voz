@@ -54,6 +54,40 @@ if (declaracion && charCount) {
   });
 }
 
+// Validación del nombre - SIN NÚMEROS
+const nombreInput = document.getElementById('nombre');
+if (nombreInput) {
+  nombreInput.addEventListener('input', function(e) {
+    // Remover números y caracteres especiales (excepto espacios, tildes y ñ)
+    let valor = e.target.value;
+    let valorLimpio = valor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    
+    // Si el valor cambió, actualizar el input
+    if (valor !== valorLimpio) {
+      e.target.value = valorLimpio;
+    }
+  });
+  
+  // Validación adicional al perder foco
+  nombreInput.addEventListener('blur', function() {
+    let valor = this.value.trim();
+    
+    // Validar que no contenga números (segunda capa de seguridad)
+    if (valor && /\d/.test(valor)) {
+      // Remover números si los hubiera
+      this.value = valor.replace(/\d/g, '');
+      alert('El nombre no puede contener números. Solo se permiten letras y espacios.');
+      this.focus();
+    }
+    
+    // Validar formato básico del nombre
+    if (valor && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,}$/.test(valor)) {
+      alert('Por favor ingrese un nombre válido (solo letras y espacios)');
+      this.focus();
+    }
+  });
+}
+
 // Validación antes de enviar
 formulario.addEventListener('submit', (e) => {
   const esAnonimo = esAnonimoInput.value === 'true';
@@ -108,6 +142,22 @@ formulario.addEventListener('submit', (e) => {
     if (!nombre || !curso) {
       e.preventDefault();
       alert('Por favor complete todos los campos requeridos');
+      return;
+    }
+    
+    // Validar que el nombre no contenga números (tercera capa de seguridad)
+    if (nombre && /\d/.test(nombre)) {
+      e.preventDefault();
+      alert('El nombre no puede contener números. Por favor ingrese solo letras y espacios.');
+      document.getElementById('nombre').focus();
+      return;
+    }
+    
+    // Validar formato del nombre
+    if (nombre && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,}$/.test(nombre)) {
+      e.preventDefault();
+      alert('Por favor ingrese un nombre válido (solo letras y espacios)');
+      document.getElementById('nombre').focus();
       return;
     }
   }
@@ -295,6 +345,16 @@ style.textContent = `
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
   }
   
+  #nombre.error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+  
+  #nombre.success {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+  }
+  
   /* Estilos para los botones de toggle */
   .toggle-btn {
     transition: all 0.3s ease;
@@ -333,6 +393,12 @@ document.addEventListener('DOMContentLoaded', function() {
   if (rutInput) {
     rutInput.setAttribute('title', 'Ejemplos: 12345678-9 o 123456789');
   }
+  
+  // Agregar tooltip para el nombre
+  const nombreInput = document.getElementById('nombre');
+  if (nombreInput) {
+    nombreInput.setAttribute('title', 'Solo letras y espacios. No se permiten números ni caracteres especiales.');
+  }
 });
 
 // También puedes agregar esta función para testing
@@ -354,5 +420,3 @@ function testRUTs() {
   });
 }
 
-// Descomenta la siguiente línea para ejecutar tests en consola:
-// testRUTs();

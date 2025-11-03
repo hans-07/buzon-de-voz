@@ -138,6 +138,7 @@ def admin():
         return redirect(url_for('login'))
     try:
         reportes = Reporte.obtener_todos()
+        reportes.sort(key=lambda x: x.created_at, reverse=True)
         # OCULTAR RUT en reportes anónimos para la vista
         for reporte in reportes:
             if getattr(reporte, 'es_anonimo', False):
