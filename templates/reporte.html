@@ -23,9 +23,6 @@
           <button type="button" class="toggle-btn active" id="btnIdentificado">
             Reporte Identificado
           </button>
-          <button type="button" class="toggle-btn" id="btnAnonimo">
-            Reporte Anónimo
-          </button>
         </div>
 
         <form method="POST" id="reportingForm" action="{{ url_for('hacer_reporte') }}">
@@ -86,9 +83,6 @@
           <div class="security-notice">
             <strong>Confidencialidad garantizada:</strong> Toda la información será tratada con estricta reserva y solo será accesible al equipo de convivencia escolar.
           </div>
-
-          <!-- Campo oculto para anónimo -->
-          <input type="hidden" name="es_anonimo" id="esAnonimoInput" value="false">
 
           <!-- Acciones -->
           <div class="button-group">
