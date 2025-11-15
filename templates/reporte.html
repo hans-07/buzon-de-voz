@@ -18,12 +18,7 @@
           </p>
         </div>
 
-        <!-- Selector de tipo de reporte -->
-        <div class="report-type-toggle">
-          <button type="button" class="toggle-btn active" id="btnIdentificado">
-            Reporte Identificado
-          </button>
-        </div>
+        <input type="hidden" id="esAnonimoInput" name="esAnonimo" value="false">
 
         <form method="POST" id="reportingForm" action="{{ url_for('hacer_reporte') }}">
           <!-- Información personal (solo si es identificado) -->

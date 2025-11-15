@@ -156,7 +156,6 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Tipo</th>
               <th>Nombre</th>
               <th class="hide-mobile">RUT</th>
               <th>Curso</th>
@@ -171,17 +170,6 @@
             {% for reporte in reportes %}
             <tr class="reporte-row" data-prioridad="{{ reporte.prioridad }}" data-estado="{{ reporte.estado }}">
               <td class="reporte-id">{{ reporte.id }}</td>
-              <td>
-                {% if reporte.es_anonimo %}
-                  <span class="badge badge-anonimo">
-                    <i data-lucide="shield" size="12"></i> Anón
-                  </span>
-                {% else %}
-                  <span class="badge badge-identificado">
-                    <i data-lucide="user" size="12"></i> ID
-                  </span>
-                {% endif %}
-              </td>
               <td class="nombre-truncate">{{ reporte.nombre }}</td>
               <td class="hide-mobile">{{ reporte.rut }}</td>
               <td>{{ reporte.curso }}</td>
