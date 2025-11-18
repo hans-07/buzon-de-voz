@@ -68,3 +68,10 @@ class Reporte:
             'estado': nuevo_estado
         }
         return connectToMySQL('db_buzon').query_db(query, data)
+    
+    @classmethod
+    def mismo_nombre(self, otro_objeto):
+        """Verifica si tiene el mismo nombre que otro objeto"""
+        if hasattr(otro_objeto, 'nombre'):
+            return self.nombre == otro_objeto.nombre
+        return False

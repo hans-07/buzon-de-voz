@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify
 from reportes import Reporte
+from alumnos import Alumnos
 from ia import chat
 
 app = Flask(__name__)
@@ -8,7 +9,7 @@ app.config['SECRET_KEY'] = 'una_clave_secreta_muy_segura'
 # Credenciales fijas para admin (sin base de datos)
 ADMIN_CREDENTIALS = {
     'email': 'admin@colegio.com',
-    'password': 'admin123'
+    'password': 'PRINCIPE$3017'
 }
 
 # Página principal landing
@@ -24,6 +25,7 @@ def hacer_reporte():
     if request.method == 'POST':
         # Determinar si es anónimo
         es_anonimo = request.form.get('es_anonimo') == 'true'
+            
         if es_anonimo:
             # Datos para reporte anónimo
             nombre = "Anónimo"
@@ -48,6 +50,23 @@ def hacer_reporte():
             return render_template('reporte.html')
         
         try:
+            """Validar coincidencia de datos del alumno"""
+            alumnos = Alumnos.obtener_todos()
+            alumno_existe = False
+            
+            for alumno in alumnos:
+            # Verificar si coincide nombre Y curso
+                if (hasattr(alumno, 'nombre') and 
+                    alumno.nombre == nombre and 
+                    hasattr(alumno, 'curso') and 
+                    alumno.curso == curso):
+                        alumno_existe = True
+                        break
+                    
+            if not alumno_existe:
+                flash('Alumno no encontrado. Verifique nombre y curso.', 'error')
+                return redirect(url_for('index'))
+            
             # Determinar prioridad automáticamente
             prioridad_map = {
                 'acoso': 'alta', 
@@ -214,8 +233,6 @@ def cambiar_estado(reporte_id, nuevo_estado):
     except Exception as e:
         flash(f'Error: {str(e)}', 'error')
     return redirect(url_for('admin'))
-
-
 
 if __name__ == "__main__": 
     app.run(debug=True)
