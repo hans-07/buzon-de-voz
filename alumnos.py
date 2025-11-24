@@ -2,16 +2,21 @@ from mysqlconnection import connectToMySQL
 
 class Alumnos:
     def __init__(self, data):
-        self.nombre = data.get('nombre')
+        self.fecha_nacimiento = data.get('fecha_nacimiento')
         self.rut = data.get('rut')
-        self.curso = data.get('curso')
+        self.nombre = data.get('nombre')
+        self.apellidos = data.get('apellidos')
     
     @classmethod
     def obtener_todos(cls):
         """Obtiene todos los alumnos de la base de datos"""
         try:
-            query = "SELECT nombre, rut, curso FROM alumnos"
+            query = "SELECT fecha_nacimiento, rut, nombre, apellidos FROM alumnos"
             resultados = connectToMySQL('db_buzon').query_db(query)
+            
+            if resultados is None:
+                print("No se encontraron resultados")
+                return []
             
             alumnos = []
             for fila in resultados:

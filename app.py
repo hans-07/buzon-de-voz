@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 from reportes import Reporte
 from alumnos import Alumnos
 from ia import chat
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'una_clave_secreta_muy_segura'
@@ -9,7 +10,7 @@ app.config['SECRET_KEY'] = 'una_clave_secreta_muy_segura'
 # Credenciales fijas para admin (sin base de datos)
 ADMIN_CREDENTIALS = {
     'email': 'admin@colegio.com',
-    'password': 'PRINCIPE$3017'
+    'password': 'admin123'
 }
 
 # Página principal landing
@@ -18,53 +19,114 @@ def index():
     return render_template('index.html')
 
 
+# Validar alumno antes de hacer reporte
+@app.route('/validar_alumno', methods=['POST'])
+def validar_alumno():
+    """Valida RUT y fecha de nacimiento contra la base de datos"""
+    try:
+        data = request.get_json()
+        rut = data.get('rut', '').strip()
+        fecha_nacimiento = data.get('fecha_nacimiento', '').strip()
+        
+        print(f"[VALIDACION] RUT ingresado: {rut}")
+        print(f"[VALIDACION] Fecha ingresada: {fecha_nacimiento}")
+        
+        if not rut or not fecha_nacimiento:
+            return jsonify({
+                'valido': False,
+                'mensaje': 'Por favor complete todos los campos'
+            }), 400
+        
+        # Limpiar RUT (remover puntos, guiones y espacios)
+        rut_limpio = rut.replace('.', '').replace('-', '').replace(' ', '').upper()
+        print(f"[VALIDACION] RUT limpio: {rut_limpio}")
+        
+        # Obtener todos los alumnos
+        alumnos = Alumnos.obtener_todos()
+        print(f"[VALIDACION] Total de alumnos en BD: {len(alumnos)}")
+        
+        # Buscar coincidencia
+        for alumno in alumnos:
+            if alumno.rut is None:
+                continue
+                
+            alumno_rut = alumno.rut.replace('.', '').replace('-', '').replace(' ', '').upper()
+            print(f"[VALIDACION] Comparando: {rut_limpio} == {alumno_rut}")
+            
+            # Comparar RUT
+            if alumno_rut == rut_limpio:
+                print(f"[VALIDACION] RUT coincide! Verificando fecha...")
+                
+                # Comparar fecha de nacimiento
+                if alumno.fecha_nacimiento:
+                    fecha_alumno = alumno.fecha_nacimiento.strftime('%Y-%m-%d') if hasattr(alumno.fecha_nacimiento, 'strftime') else str(alumno.fecha_nacimiento)
+                    print(f"[VALIDACION] Fecha en BD: {fecha_alumno}, Fecha ingresada: {fecha_nacimiento}")
+                    
+                    if fecha_alumno == fecha_nacimiento:
+                        # Validación exitosa
+                        nombre_completo = f"{alumno.nombre} {alumno.apellidos}".strip() if alumno.nombre and alumno.apellidos else alumno.nombre or "Alumno"
+                        print(f"[VALIDACION] ✓ VALIDACIÓN EXITOSA para {nombre_completo}")
+                        return jsonify({
+                            'valido': True,
+                            'mensaje': 'Validación exitosa',
+                            'nombre': nombre_completo,
+                            'apellidos': alumno.apellidos or '',
+                            'rut': alumno.rut
+                        }), 200
+                    else:
+                        print(f"[VALIDACION] Fecha NO coincide")
+        
+        # No se encontró coincidencia
+        print(f"[VALIDACION] ✗ No se encontró coincidencia")
+        return jsonify({
+            'valido': False,
+            'mensaje': 'RUT o fecha de nacimiento no coinciden. Por favor verifique los datos.'
+        }), 200
+        
+    except Exception as e:
+        print(f"[VALIDACION] ✗ Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'valido': False,
+            'mensaje': 'Error al procesar la validación'
+        }), 500
+
+
 # Página para enviar reportes (acceso libre para estudiantes)
 @app.route('/enviar_reporte', methods=['GET', 'POST'])
 def hacer_reporte():
     """Página para enviar reportes (acceso libre para estudiantes)"""
     if request.method == 'POST':
-        # Determinar si es anónimo
-        es_anonimo = request.form.get('es_anonimo') == 'true'
-            
-        if es_anonimo:
-            # Datos para reporte anónimo
-            nombre = "Anónimo"
-            rut = request.form.get('rut')
-            curso = "No especificado"
-            correo = None
-        else:
-            # Datos para reporte normal
-            nombre = request.form.get('nombre')
-            rut = request.form.get('rut')
-            curso = request.form.get('curso')
-            correo = request.form.get('correo')
+        # Datos para reporte normal
+        nombre = request.form.get('nombre')
+        rut = request.form.get('rut')
+        curso = request.form.get('curso')
+        correo = request.form.get('correo')
         categoria = request.form.get('tipoReporte')
         descripcion = request.form.get('declaracion')
         
         # Validaciones
-        if not es_anonimo and not all([nombre, rut, curso, categoria, descripcion]):
+        if not all([nombre, rut, curso, categoria, descripcion]):
             flash('Por favor complete todos los campos requeridos', 'error')
-            return render_template('reporte.html')
-        if es_anonimo and not all([rut, categoria, descripcion]):
-            flash('Por favor seleccione categoría y describa el incidente', 'error')
             return render_template('reporte.html')
         
         try:
-            """Validar coincidencia de datos del alumno"""
+            # Validar coincidencia de datos del alumno
             alumnos = Alumnos.obtener_todos()
             alumno_existe = False
             
             for alumno in alumnos:
-            # Verificar si coincide nombre Y curso
+                # Verificar si coincide nombre Y rut
                 if (hasattr(alumno, 'nombre') and 
                     alumno.nombre == nombre and 
-                    hasattr(alumno, 'curso') and 
-                    alumno.curso == curso):
+                    hasattr(alumno, 'rut') and 
+                    alumno.rut == rut):
                         alumno_existe = True
                         break
                     
             if not alumno_existe:
-                flash('Alumno no encontrado. Verifique nombre y curso.', 'error')
+                flash('Alumno no encontrado. Verifique sus datos.', 'error')
                 return redirect(url_for('index'))
             
             # Determinar prioridad automáticamente
@@ -91,11 +153,8 @@ def hacer_reporte():
             
             # Crear reporte — pasar prioridad explícita
             if prioridad != "spam":
-                if Reporte.crear_reporte(nombre, rut, curso, correo, categoria, descripcion, prioridad, es_anonimo):
-                    if es_anonimo:
-                        flash('Reporte anónimo enviado exitosamente. Será revisado pronto.', 'success')
-                    else:
-                        flash('Reporte enviado exitosamente. Será revisado pronto.', 'success')
+                if Reporte.crear_reporte(nombre, rut, curso, correo, categoria, descripcion, prioridad, False):
+                    flash('Reporte enviado exitosamente. Será revisado pronto.', 'success')
                 else:
                     flash('Error al enviar el reporte', 'error')
             else:
@@ -109,46 +168,6 @@ def hacer_reporte():
     return render_template('reporte.html')
 
 
-@app.route('/enviar_anonimo', methods=['POST'])
-def enviar_anonimo():
-    """Endpoint para enviar reporte anónimo (AJAX)"""
-    try:
-        data = request.get_json()
-        rut = data.get('rut')
-        categoria = data.get('categoria')
-        descripcion = data.get('descripcion')
-        if not all([categoria, descripcion, rut]):
-            return jsonify({'success': False, 'message': 'Categoría y descripción son requeridas'})
-        # Determinar prioridad
-        prioridad_map = {
-            'acoso': 'alta', 'bullying': 'alta', 'violencia': 'alta',
-            'ciberacoso': 'alta', 'discriminacion': 'media',
-            'conflicto': 'baja', 'indisciplina': 'baja', 'otro': 'baja'
-        }
-        prioridad = prioridad_map.get(categoria, 'media')
-        # Crear reporte anónimo
-        resultado = Reporte.crear_reporte(
-            nombre="Anónimo",
-            rut="No proporcionado",
-            curso="No especificado",
-            correo=None,
-            categoria=categoria,
-            descripcion=descripcion,
-            prioridad=prioridad,
-            es_anonimo=True
-        )
-        if resultado:
-            return jsonify({
-                'success': True, 
-                'message': 'Reporte anónimo enviado exitosamente'
-            })
-        else:
-            return jsonify({'success': False, 'message': 'Error al enviar el reporte'})   
-    except Exception as e:
-        return jsonify({'success': False, 'message': f'Error: {str(e)}'})
-
-
-
 @app.route('/admin')
 def admin():
     """Panel de administración (solo con login)"""
@@ -158,10 +177,6 @@ def admin():
     try:
         reportes = Reporte.obtener_todos()
         reportes.sort(key=lambda x: x.created_at, reverse=True)
-        # OCULTAR RUT en reportes anónimos para la vista
-        for reporte in reportes:
-            if getattr(reporte, 'es_anonimo', False):
-                reporte.rut = "No proporcionado"
         return render_template('admin.html', reportes=reportes)
     except Exception as e:
         flash(f'Error al cargar los reportes: {str(e)}', 'error')
@@ -179,9 +194,6 @@ def detalle_reporte(reporte_id):
         if not reporte:
             flash('Reporte no encontrado', 'error')
             return redirect(url_for('admin'))
-        # OCULTAR RUT si es anónimo
-        if getattr(reporte, 'es_anonimo', False):
-            reporte.rut = "No proporcionado"
         return render_template('detalle_reporte.html', reporte=reporte)
     except Exception as e:
         flash(f'Error al cargar el reporte: {str(e)}', 'error')

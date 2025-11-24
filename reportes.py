@@ -71,7 +71,7 @@ class Reporte:
     
     @classmethod
     def mismo_nombre(self, otro_objeto):
-        """Verifica si tiene el mismo nombre que otro objeto"""
-        if hasattr(otro_objeto, 'nombre'):
-            return self.nombre == otro_objeto.nombre
+        """Verifica si tiene el mismo rut que otro objeto"""
+        if hasattr(otro_objeto, 'rut'):
+            return self.rut == otro_objeto.rut
         return False
