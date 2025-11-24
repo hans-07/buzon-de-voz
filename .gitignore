@@ -141,4 +141,6 @@ Thumbs.db
 
 # Database files
 *.db
-*.sqlite
+*.sqlite__pycache__/
+*.pyc
+*.pyo
