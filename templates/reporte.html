@@ -8,7 +8,37 @@
   <title>Reporte - TellMe</title>
 </head>
 <body>
-  <div class="container">
+  <!-- Modal de validación de seguridad -->
+  <div id="validacionModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Validación de Seguridad</h2>
+        <p class="security-text">Por seguridad, necesitamos verificar tu identidad antes de que puedas enviar un reporte.</p>
+      </div>
+      
+      <form id="validacionForm">
+        <div class="form-group">
+          <label for="validacionRut" class="label required-field">RUT</label>
+          <input type="text" id="validacionRut" name="rut" class="input" placeholder="12.345.678-9" required>
+          <small class="field-description">Ingrese su RUT (con o sin puntos y guión)</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="validacionFecha" class="label required-field">Fecha de Nacimiento</label>
+          <input type="date" id="validacionFecha" name="fecha_nacimiento" class="input" required>
+        </div>
+
+        <div id="validacionError" class="error-message validation-error-hidden"></div>
+
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">Aceptar</button>
+          <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="container" id="mainContainer">
     <div id="mainForm">
       <div class="card">
         <div class="card-header">
@@ -18,22 +48,21 @@
           </p>
         </div>
 
-        <!-- Selector de tipo de reporte -->
-        <div class="report-type-toggle">
-          <button type="button" class="toggle-btn active" id="btnIdentificado">
-            Reporte Identificado
-          </button>
-          <button type="button" class="toggle-btn" id="btnAnonimo">
-            Reporte Anónimo
-          </button>
-        </div>
+        <input type="hidden" id="esAnonimoInput" name="esAnonimo" value="false">
 
         <form method="POST" id="reportingForm" action="{{ url_for('hacer_reporte') }}">
           <!-- Información personal (solo si es identificado) -->
           <div id="seccionPersonal">
             <div class="form-group">
-              <label for="nombre" class="label required-field">Nombre Completo</label>
+              <label for="nombre" class="label">Nombre Completo</label>
               <input type="text" id="nombre" name="nombre" class="input" placeholder="Ingrese su nombre completo" required>
+            </div>
+            <div class="form-group">
+              <label for="rut" class="label">RUT</label>
+              <input type="text" id="rut" name="rut" class="input" placeholder="12.345.678-9" required>
+              <small class="field-description" id="rutDescription">
+                Ingrese su RUT (con o sin puntos y guión)
+              </small>
             </div>
             <div class="form-group">
               <label for="curso" class="label required-field">Curso</label>
@@ -43,15 +72,6 @@
               <label for="correo" class="label">Correo Electrónico (opcional)</label>
               <input type="email" id="correo" name="correo" class="input" placeholder="correo@ejemplo.com">
             </div>
-          </div>
-
-          <!-- RUT (siempre visible, requerido en ambos modos) -->
-          <div class="form-group">
-            <label for="rut" class="label required-field">RUT</label>
-            <input type="text" id="rut" name="rut" class="input" placeholder="12.345.678-9" required>
-            <small class="field-description" id="rutDescription">
-              En reportes anónimos, su RUT será tratado con confidencialidad
-            </small>
           </div>
 
           <!-- Tipo de reporte -->
@@ -87,9 +107,6 @@
             <strong>Confidencialidad garantizada:</strong> Toda la información será tratada con estricta reserva y solo será accesible al equipo de convivencia escolar.
           </div>
 
-          <!-- Campo oculto para anónimo -->
-          <input type="hidden" name="es_anonimo" id="esAnonimoInput" value="false">
-
           <!-- Acciones -->
           <div class="button-group">
             <button type="submit" class="btn btn-primary">
@@ -105,6 +122,7 @@
     </div>
   </div>
 
+  <script src="static/js/validacion.js"></script>
   <script src="static/js/reporte.js"></script>
 </body>
 </html>

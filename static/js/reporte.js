@@ -1,49 +1,10 @@
-// Toggle entre identificado y anónimo
-const btnIdentificado = document.getElementById('btnIdentificado');
-const btnAnonimo = document.getElementById('btnAnonimo');
-const seccionPersonal = document.getElementById('seccionPersonal');
+// Elementos del formulario
 const esAnonimoInput = document.getElementById('esAnonimoInput');
 const formulario = document.getElementById('reportingForm');
 const rutDescription = document.getElementById('rutDescription');
 
 // Variable para controlar las alertas
 let rutAlertMostrada = false;
-
-// Inicializar estado
-btnAnonimo.addEventListener('click', () => {
-  btnAnonimo.classList.add('active');
-  btnIdentificado.classList.remove('active');
-  seccionPersonal.style.display = 'none';
-  esAnonimoInput.value = 'true';
-  
-  // Actualizar descripción del RUT para modo anónimo
-  rutDescription.textContent = "En reportes anónimos, su RUT será tratado con máxima confidencialidad";
-  rutDescription.style.color = "var(--color-warning)";
-  
-  // Remover required solo de campos personales (excepto RUT)
-  document.getElementById('nombre').required = false;
-  document.getElementById('curso').required = false;
-  document.getElementById('correo').required = false;
-  
-  // RUT sigue siendo requerido
-  document.getElementById('rut').required = true;
-});
-
-btnIdentificado.addEventListener('click', () => {
-  btnIdentificado.classList.add('active');
-  btnAnonimo.classList.remove('active');
-  seccionPersonal.style.display = 'block';
-  esAnonimoInput.value = 'false';
-  
-  // Restaurar descripción normal del RUT
-  rutDescription.textContent = "Ingrese su RUT (con o sin puntos y guión)";
-  rutDescription.style.color = "var(--color-text-muted)";
-  
-  // Agregar required a campos personales
-  document.getElementById('nombre').required = true;
-  document.getElementById('curso').required = true;
-  document.getElementById('rut').required = true;
-});
 
 // Contador de caracteres
 const declaracion = document.getElementById('declaracion');
@@ -383,11 +344,6 @@ function mostrarEjemplosRUT() {
 
 // Inicialización adicional cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-  // Asegurar que el modo identificado esté activo por defecto
-  if (btnIdentificado && !btnIdentificado.classList.contains('active')) {
-    btnIdentificado.click();
-  }
-  
   // Agregar tooltip o ayuda contextual para el RUT
   const rutInput = document.getElementById('rut');
   if (rutInput) {
