@@ -15,6 +15,35 @@ if (declaracion && charCount) {
   });
 }
 
+// Descripciones breves por categoría de incidente
+const tipoReporteSelect = document.getElementById('tipoReporte');
+const tipoReporteDesc = document.getElementById('tipoReporteDesc');
+
+const tipoReporteMap = {
+  'acoso': 'Conducta de hostigamiento o intimidación hacia una persona, puede incluir aislamiento, amenazas o chantaje.',
+  'bullying': 'Acoso entre pares en el contexto escolar: agresiones físicas o verbales repetidas por uno o varios estudiantes.',
+  'discriminacion': 'Trato desigual o prejuicio por motivos de raza, género, orientación, religión u otras características personales.',
+  'violencia': 'Actos que implican daño físico o riesgo serio para la integridad de las personas.',
+  'ciberacoso': 'Hostigamiento realizado a través de dispositivos electrónicos, redes sociales o mensajería.',
+  'conflicto': 'Conflictos interpersonales entre estudiantes que no necesariamente constituyen acoso sistemático.',
+  'indisciplina': 'Comportamientos que afectan el orden y la convivencia escolar, sin intención de causar daño grave.',
+  'otro': 'Otra situación no listada; describa en la sección de descripción detallada.'
+};
+
+function updateTipoReporteDesc() {
+  if (!tipoReporteSelect || !tipoReporteDesc) return;
+  const val = tipoReporteSelect.value;
+  const texto = tipoReporteMap[val] || '';
+  tipoReporteDesc.textContent = texto;
+  tipoReporteDesc.style.display = texto ? 'block' : 'none';
+}
+
+if (tipoReporteSelect) {
+  tipoReporteSelect.addEventListener('change', updateTipoReporteDesc);
+  // Inicializar si hay un valor por defecto
+  updateTipoReporteDesc();
+}
+
 // Validación del nombre - SIN NÚMEROS
 const nombreInput = document.getElementById('nombre');
 if (nombreInput) {
