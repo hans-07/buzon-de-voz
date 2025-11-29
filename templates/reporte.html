@@ -20,7 +20,7 @@
         <div class="form-group">
           <label for="validacionRut" class="label required-field">RUT</label>
           <input type="text" id="validacionRut" name="rut" class="input" placeholder="12.345.678-9" required>
-          <small class="field-description">Ingrese su RUT (con o sin puntos y guión)</small>
+          <small class="field-description">Ingrese su RUT</small>
         </div>
         
         <div class="form-group">
@@ -60,9 +60,6 @@
             <div class="form-group">
               <label for="rut" class="label">RUT</label>
               <input type="text" id="rut" name="rut" class="input" placeholder="12.345.678-9" required>
-              <small class="field-description" id="rutDescription">
-                Ingrese su RUT (con o sin puntos y guión)
-              </small>
             </div>
             <div class="form-group">
               <label for="curso" class="label required-field">Curso</label>
@@ -88,6 +85,7 @@
               <option value="indisciplina">Indisciplina</option>
               <option value="otro">Otro</option>
             </select>
+            <div id="tipoReporteDesc" class="field-description categoria-desc" aria-live="polite"></div>
           </div>
 
           <!-- Descripción -->
