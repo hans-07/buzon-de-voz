@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles/index.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+    <title>TellMe - Buzón Inteligente</title>
+    <link rel="icon" href="static/img/Tellme.png" type="image/png">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="/static/img/Tellme.png" alt="Logo TellMe">
+                    <h1
+                        style="margin: 0 0 0 0.75rem; font-size: 1.6rem; font-weight: 700; letter-spacing: 0.01em; color: #222;">
+                        TellMe</h1>
+                </div>
+                <button class="navbar-toggle" aria-label="Abrir menú" aria-expanded="false">
+                    <span class="navbar-toggle-bar"></span>
+                    <span class="navbar-toggle-bar"></span>
+                    <span class="navbar-toggle-bar"></span>
+                </button>
+                <nav class="navbar-menu">
+                    <a href="/login" class="btn-login">Iniciar sesión</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+        <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Tu voz importa,<br>
+                    evaluamos con IA<br>
+                    para actuar más rápido
+                </h1>
+                <p class="hero-description">
+                    Un espacio seguro con IA que analiza cada reporte para priorizar situaciones urgentes. Reporta cualquier situación que te haga sentir incómodo, asustado o en peligro. Actuaremos de inmediato según la gravedad.
+                </p>
+                <a href="/reporte" class="btn-report">
+                    Hacer un Reporte
+                </a>
+            </div>
+            <div class="hero-image">
+                <img src="/static/img/niña-tellme.png" alt="Estudiante usando TellMe" class="student-illustration">
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h3>¿Cómo Funciona?</h3>
+                <p>Cuatro pasos simples para hacer tu reporte</p>
+            </div>
+            <div class="steps-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="step-icon primary">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </div>
+                        <h4>1. Escribe tu Reporte</h4>
+                    </div>
+                    <div class="card-content">
+                        <p>Describe lo que pasó con tus propias palabras. No te preocupes por la gramática, solo cuenta
+                            lo que necesitas compartir.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="step-icon primary">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <circle cx="12" cy="16" r="1" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                        </div>
+                        <h4>2. Envío Seguro</h4>
+                    </div>
+                    <div class="card-content">
+                        <p>Tu reporte se envía de forma completamente confidencial y segura directamente al inspector
+                            del colegio.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="step-icon accent">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <h4>3. Análisis con IA</h4>
+                    </div>
+                    <div class="card-content">
+                        <p>Nuestra Inteligencia Artificial analiza y clasifica automáticamente tu reporte por urgencia y
+                            tipo, priorizando casos críticos.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="step-icon primary">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <h4>4. Respuesta Rápida</h4>
+                    </div>
+                    <div class="card-content">
+                        <p>El inspector revisará tu reporte ya clasificado y tomará las medidas necesarias para ayudarte
+                            y resolver la situación.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section class="privacy">
+        <div class="container">
+            <div class="privacy-card">
+                <div class="privacy-header">
+                    <div class="privacy-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <h3>Tu Privacidad Está Protegida</h3>
+                </div>
+                <div class="privacy-features">
+                    <div class="feature">
+                        <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <circle cx="12" cy="16" r="1" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                        <div>
+                            <h4>100% Confidencial</h4>
+                            <p>Solo el inspector del colegio verá tu reporte. Tu identidad está protegida.</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                        <div>
+                            <h4>IA Ética y Segura</h4>
+                            <p>Nuestra Inteligencia Artificial procesa la información manteniendo tu
+                                privacidad.</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        <div>
+                            <h4>Apoyo Profesional</h4>
+                            <p>Personal capacitado revisará tu reporte y te brindará el apoyo necesario.</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <div>
+                            <h4>Respuesta Rápida</h4>
+                            <p>Gracias a nuestra IA, nos comprometemos a revisar y responder a tu reporte lo antes
+                                posible.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="/static/img/Tellme.png" alt="Logo TellMe">
+                    <span>TellMe - Buzón Inteligente</span>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 TellMe. Comprometidos con tu seguridad y bienestar mediante tecnología IA.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+<script>
+    // Navbar hamburguesa responsivo
+    const toggle = document.querySelector('.navbar-toggle');
+    const menu = document.querySelector('.navbar-menu');
+    toggle.addEventListener('click', function () {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', !expanded);
+        menu.classList.toggle('open');
+    });
+</script>
+
+</html>
